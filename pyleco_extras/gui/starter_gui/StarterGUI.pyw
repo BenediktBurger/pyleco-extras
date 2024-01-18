@@ -17,7 +17,7 @@ from PyQt6.QtGui import QColor
 from pyleco.directors.starter_director import StarterDirector
 from pyleco.core.message import Message
 from pyleco.management.starter import Status
-from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindow, start_app
+from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindowDesigner, start_app
 
 # Local packages.
 from pyleco_extras.gui.starter_gui.data.settings import Settings
@@ -64,7 +64,7 @@ class StarterItem(QtGui.QStandardItem):
     pass
 
 
-class StarterGUI(LECOBaseMainWindow):
+class StarterGUI(LECOBaseMainWindowDesigner):
     """Control starter programs."""
 
     actionAdd: QtGui.QAction

@@ -112,8 +112,8 @@ class _LECOBaseMainWindow(QtWidgets.QMainWindow):
             self.statusBar().showMessage("Not signed in.", 5000)  # type: ignore
 
 
-class LECOBaseMainWindow(_LECOBaseMainWindow):
-    """Base MainWindow subclass with a LECO listener, UI defined via ui file."""
+class LECOBaseMainWindowDesigner(_LECOBaseMainWindow):
+    """Base MainWindow subclass with a LECO listener, UI defined via designer ui file."""
 
     def __init__(self,
                  name: str,
@@ -146,7 +146,7 @@ class LECOBaseMainWindowNoDesigner(_LECOBaseMainWindow):
         mb = self.menuBar()
         if mb is not None:
             app_m = mb.addMenu("Application")
-            app_m.addActions([self.actionClose, self.actionSettings])  # type: ignore
+            app_m.addActions([self.actionSettings, self.actionClose])  # type: ignore
 
 
 def start_app(main_window_class, window_kwargs: dict | None = None,

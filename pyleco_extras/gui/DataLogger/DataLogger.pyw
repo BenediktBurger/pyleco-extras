@@ -59,7 +59,7 @@ class DataLoggerGUI(DataLoggerBase):
     listener: DataLoggerListener
     communicator: CommunicatorPipe
 
-    def __init__(self, name: str = "DataLoggerNew", host: str = "localhost", **kwargs) -> None:
+    def __init__(self, name: str = "DataLogger", host: str = "localhost", **kwargs) -> None:
         # Use initialization of parent class QMainWindow.
         super().__init__(name=name, settings_dialog_class=Settings, host=host, **kwargs)
 

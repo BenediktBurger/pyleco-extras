@@ -15,7 +15,7 @@ from pyqtgraph.dockarea import DockArea, Dock
 
 from pyleco.management.data_logger import TriggerTypes, ValuingModes
 
-from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindow, start_app
+from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindowDesigner, start_app
 from pyleco_extras.gui.DataLogger.data.singlePlotWidget import SinglePlotWidget, PlotGroupWidget
 from pyleco_extras.gui.DataLogger.data.multiPlotWidget import MultiPlotWidget
 
@@ -23,7 +23,7 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.StreamHandler())
 
 
-class DataLoggerBase(LECOBaseMainWindow):
+class DataLoggerBase(LECOBaseMainWindowDesigner):
     """Base class for the DataLogger family.
     """
     data_length_limit: int = 0  # length of list lengths
