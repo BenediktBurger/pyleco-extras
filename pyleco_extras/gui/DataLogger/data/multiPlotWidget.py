@@ -2,7 +2,7 @@
 """
 Plot window of the Datalogger.
 
-Created on Fri Jul  9 14:32:56 2021 by Benedikt Moneke.
+Created on Fri Jul  9 14:32:56 2021 by Benedikt Burger.
 """
 
 from typing import Any

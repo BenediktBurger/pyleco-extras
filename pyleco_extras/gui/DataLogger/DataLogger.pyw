@@ -6,7 +6,7 @@ classes
 DataLogger
     The main program, called if this module is executed.
 
-Created on Thu Apr  1 15:14:39 2021 by Benedikt Moneke
+Created on Thu Apr  1 15:14:39 2021 by Benedikt Burger
 """
 
 # Standard packages.
@@ -21,13 +21,12 @@ from PyQt6.QtCore import pyqtSlot
 from pyleco.management.data_logger import TriggerTypes
 from pyleco.utils.pipe_handler import CommunicatorPipe
 
-from devices import base_main_window
-from devices.gui_utils import start_app
+from pyleco_extras.gui_utils import base_main_window
+from pyleco_extras.gui_utils.base_main_window import start_app
+from pyleco_extras.gui.DataLogger.DataLoggerBase import DataLoggerBase
+from pyleco_extras.gui.DataLogger.data.settings import Settings
+from pyleco_extras.gui.DataLogger.data.data_logger_listener import DataLoggerListener
 
-# Local packages.
-from DataLoggerBase import DataLoggerBase
-from data.settings import Settings
-from data.data_logger_listener import DataLoggerListener
 
 nan = float("nan")
 

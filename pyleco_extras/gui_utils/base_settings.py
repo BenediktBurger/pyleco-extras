@@ -109,7 +109,7 @@ class BaseSettings(QtWidgets.QDialog):
         self.formLayout.addRow(labelText, widget)
         self.anyset.append((getter, setter, key, defaultValue, type))
 
-    def create_file_dialog(self, default: str, tooltip: str = "") -> None:
+    def create_file_dialog(self, default: str, tooltip: str = "Save path.") -> None:
         pbSavePath = QtWidgets.QPushButton("Open...")
         self.leSavePath = QtWidgets.QLineEdit()
         self.leSavePath.setToolTip(tooltip)

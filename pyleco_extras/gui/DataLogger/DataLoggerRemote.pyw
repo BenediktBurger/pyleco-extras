@@ -1,7 +1,7 @@
 """
 Remotely control a DataLogger
 
-Created on Thu Apr  1 15:14:39 2021 by Benedikt Moneke
+Created on Thu Apr  1 15:14:39 2021 by Benedikt Burger
 """
 
 # Standard packages.
@@ -14,14 +14,14 @@ import pint
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import pyqtSlot
 
-from pyleco.utils.parser import parse_command_line_parameters
 from pyleco.utils.qt_listener import DataMessage
 from pyleco.management.data_logger import TriggerTypes
 from pyleco.directors.data_logger_director import DataLoggerDirector
 
-# Local packages.
-from DataLoggerBase import DataLoggerBase
-from data.settings_remote import Settings
+from pyleco_extras.gui_utils.base_main_window import start_app
+from pyleco_extras.gui.DataLogger.DataLoggerBase import DataLoggerBase
+from pyleco_extras.gui.DataLogger.data.settings_remote import Settings
+
 
 log = logging.Logger(__name__)
 log.addHandler(logging.StreamHandler())
@@ -290,11 +290,4 @@ class DataLoggerRemote(DataLoggerBase):
 
 
 if __name__ == '__main__':
-    doc = DataLoggerRemote.__doc__
-    kwargs = parse_command_line_parameters(
-        logger=log,
-        parser_description=doc.split(":param", maxsplit=1)[0] if doc else None,
-    )
-    app = QtWidgets.QApplication([])
-    window = DataLoggerRemote(**kwargs)
-    app.exec()
+    start_app(DataLoggerRemote)

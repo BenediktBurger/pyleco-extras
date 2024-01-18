@@ -1,7 +1,7 @@
 """
 Remotely control a DataLogger
 
-Created on Thu Apr  1 15:14:39 2021 by Benedikt Moneke
+Created on Thu Apr  1 15:14:39 2021 by Benedikt Burger
 """
 
 # Standard packages.
@@ -18,10 +18,10 @@ from PyQt6.QtCore import pyqtSlot
 
 from pyleco.utils.parser import parse_command_line_parameters
 
-# Local packages.
-from DataLoggerBase import DataLoggerBase
-from analysis.data import load_datalogger_file
-from data.Settings import Settings
+from pyleco_extras.gui.DataLogger.DataLoggerBase import DataLoggerBase
+from pyleco_extras.gui.DataLogger.data.settings import Settings
+from pyleco_extras.gui.DataLogger.data.load_file import load_datalogger_file
+
 
 log = logging.Logger(__name__)
 log.addHandler(logging.StreamHandler())
@@ -100,7 +100,7 @@ class DataLoggerViewer(DataLoggerBase):
         self.set_configuration(meta.get("configuration", {}))
         if "time" in data.keys() and "time_h" not in data.keys():
             self.lists["time_h"] = list(np.array(data["time"]) / 3600)
-            self.variables = self.variables + ["time_h"]
+            self.variables = self.variables + ["time_h"]  # type: ignore
             d = self.units
             d["time_h"] = "h"
             self.units = d

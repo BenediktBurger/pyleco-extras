@@ -18,6 +18,8 @@ requires-python = ">=3.9"
 dependencies = [
   "pyleco",
   "qtpy",
+  "pint",
+  "pyqtgraph",
 ]
 
 [project.optional-dependencies]

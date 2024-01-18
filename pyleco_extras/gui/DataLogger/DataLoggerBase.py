@@ -15,12 +15,9 @@ from pyqtgraph.dockarea import DockArea, Dock
 
 from pyleco.management.data_logger import TriggerTypes, ValuingModes
 
-from devices.base_main_window import LECOBaseMainWindow
-from devices.gui_utils import start_app
-
-# Local packages.
-from data import singlePlotWidget, multiPlotWidget
-from data.plotWidget import PlotGroupWidget
+from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindow, start_app
+from pyleco_extras.gui.DataLogger.data.singlePlotWidget import SinglePlotWidget, PlotGroupWidget
+from pyleco_extras.gui.DataLogger.data.multiPlotWidget import MultiPlotWidget
 
 log = logging.getLogger(__name__)
 log.addHandler(logging.StreamHandler())
@@ -67,7 +64,7 @@ class DataLoggerBase(LECOBaseMainWindow):
         self.dock_count: int = 0
         self.tabWidget.addTab(self.dockArea, "&Plots")
         self.lbCount = QtWidgets.QLabel()
-        self.statusBar().addWidget(self.lbCount)
+        self.statusBar().addWidget(self.lbCount)  # type: ignore
         self.lbCount.show()
 
         self.signals = self.Signals()
@@ -233,7 +230,7 @@ class DataLoggerBase(LECOBaseMainWindow):
 
     def get_gui_configuration(self) -> dict[str, Any]:
         config = {}
-        config['header'] = self.leHeader.document().toPlainText()
+        config['header'] = self.leHeader.document().toPlainText()  # type: ignore
         config['unitsText'] = ""  # to clear it for feature removal
         config['autoSave'] = self.actionAutoSave.isChecked()
         config['pause'] = self.actionPause.isChecked()
@@ -486,18 +483,18 @@ class DataLoggerBase(LECOBaseMainWindow):
             name = f"Plot {self.dock_count}"
             self.dock_count += 1
         if type == "MultiPlotWidget":
-            plot = multiPlotWidget.MultiPlotWidget(self,
-                                                   autoCut=autoCut,  # type: ignore
-                                                   grid=grid,
-                                                   log=log,
-                                                   **kwargs)
+            plot = MultiPlotWidget(self,
+                                   autoCut=autoCut,  # type: ignore
+                                   grid=grid,
+                                   log=log,
+                                   **kwargs)
             dock = Dock(name=name, closable=True, widget=plot)
         else:
-            plot = singlePlotWidget.SinglePlotWidget(self,
-                                                     autoCut=autoCut,  # type: ignore
-                                                     grid=grid,
-                                                     log=log,
-                                                     **kwargs)
+            plot = SinglePlotWidget(self,
+                                    autoCut=autoCut,  # type: ignore
+                                    grid=grid,
+                                    log=log,
+                                    **kwargs)
             dock = Dock(name=name, closable=True, widget=plot)
         self.dockArea.addDock(dock)
 
