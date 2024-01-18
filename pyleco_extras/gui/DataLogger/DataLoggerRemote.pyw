@@ -21,7 +21,7 @@ from pyleco.directors.data_logger_director import DataLoggerDirector
 
 # Local packages.
 from DataLoggerBase import DataLoggerBase
-from data.SettingsRemote import Settings
+from data.settings_remote import Settings
 
 log = logging.Logger(__name__)
 log.addHandler(logging.StreamHandler())

@@ -26,7 +26,7 @@ from devices.gui_utils import start_app
 
 # Local packages.
 from DataLoggerBase import DataLoggerBase
-from data.Settings import Settings
+from data.settings import Settings
 from data.data_logger_listener import DataLoggerListener
 
 nan = float("nan")
