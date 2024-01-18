@@ -5,8 +5,8 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from pyleco.directors.coordinator_director import CoordinatorDirector
 from pyleco.utils.parser import parse_command_line_parameters
 
-from devices.base_main_window import LECOBaseMainWindowNoDesigner
-from settings import Settings
+from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindowNoDesigner
+from pyleco_extras.gui.LECOViewer.settings import Settings
 
 
 class LECOViewer(LECOBaseMainWindowNoDesigner):
