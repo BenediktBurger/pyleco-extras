@@ -1,0 +1,69 @@
+[project]
+name = "pyleco-extras"
+version = "0.0.1.dev"
+authors = [
+  { name="Benedikt Burger" },
+]
+description = "Extras for the python reference implementation of the Laboratory Experiment COntrol (LECO) protocol"
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 1 - Planning",
+]
+
+requires-python = ">=3.9"
+dependencies = [
+  "pyleco",
+  "qtpy",
+]
+
+[project.optional-dependencies]
+dev = [
+  'pytest',
+  'pytest-cov',
+  'sphinx',
+  'sphinx_rtd_theme',
+]
+
+[project.urls]
+"Homepage" = "https://github.com/BenediktBurger/pyleco-extras"
+"Bug Tracker" = "https://github.com/BenediktBurger/pyleco-extras/issues"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "setuptools_scm>=7.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+# write_to = "pyleco_extras/_version.py"
+
+[tool.black]
+line-length = 100
+
+[tool.isort]
+profile = "black"
+
+[tool.ruff]
+select = ["E", "F", "W"]
+line-length = 100
+exclude = [
+    ".git",
+    ".venv",
+    "__pypackages__",
+    "__pycache__",
+    "build",
+    "dist",
+    "docs/conf.py",
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[mypy]
+
+[tool.coverage.run]
+branch = true
+omit = [
+]

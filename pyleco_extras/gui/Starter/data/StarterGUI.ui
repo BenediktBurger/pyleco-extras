@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>300</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Starter GUI</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>clipboard-4-multi-size.ico</normaloff>clipboard-4-multi-size.ico</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTreeView" name="tv">
+      <property name="selectionMode">
+       <enum>QAbstractItemView::ExtendedSelection</enum>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectItems</enum>
+      </property>
+      <property name="indentation">
+       <number>10</number>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>300</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuApplication">
+    <property name="title">
+     <string>&amp;Application</string>
+    </property>
+    <addaction name="actionSettings"/>
+    <addaction name="actionClose"/>
+   </widget>
+   <widget class="QMenu" name="menuTasks">
+    <property name="title">
+     <string>&amp;Tasks</string>
+    </property>
+    <addaction name="actionStart"/>
+    <addaction name="actionStop"/>
+    <addaction name="actionRestart"/>
+    <addaction name="actionInstall"/>
+   </widget>
+   <widget class="QMenu" name="menuStarters">
+    <property name="title">
+     <string>&amp;Starters</string>
+    </property>
+    <addaction name="actionAdd"/>
+    <addaction name="actionReload"/>
+    <addaction name="actionStopStarter"/>
+    <addaction name="actionRemove"/>
+   </widget>
+   <addaction name="menuApplication"/>
+   <addaction name="menuStarters"/>
+   <addaction name="menuTasks"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionSettings">
+   <property name="text">
+    <string>&amp;Settings...</string>
+   </property>
+   <property name="toolTip">
+    <string>Open settings dialog</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>&amp;Close</string>
+   </property>
+  </action>
+  <action name="actionPublish">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Publish</string>
+   </property>
+   <property name="toolTip">
+    <string>Publish the values.</string>
+   </property>
+  </action>
+  <action name="actionStart">
+   <property name="text">
+    <string>&amp;Start</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="text">
+    <string>S&amp;top</string>
+   </property>
+   <property name="toolTip">
+    <string>Stop a task (and uninstall it as a service).</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionRestart">
+   <property name="text">
+    <string>&amp;Restart</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionReload">
+   <property name="text">
+    <string>&amp;Reload tasks</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="actionAdd">
+   <property name="text">
+    <string>&amp;Add</string>
+   </property>
+  </action>
+  <action name="actionStopStarter">
+   <property name="text">
+    <string>&amp;Stop</string>
+   </property>
+  </action>
+  <action name="actionRemove">
+   <property name="text">
+    <string>Remove</string>
+   </property>
+  </action>
+  <action name="actionInstall">
+   <property name="text">
+    <string>&amp;Install</string>
+   </property>
+   <property name="toolTip">
+    <string>Install as a service: Will be restarted after failure.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

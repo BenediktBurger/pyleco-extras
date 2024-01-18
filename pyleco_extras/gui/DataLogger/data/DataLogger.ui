@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>248</width>
+    <height>321</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Data Logger</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>sheetpad.ico</normaloff>sheetpad.ico</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="config">
+       <attribute name="title">
+        <string>&amp;Config</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <property name="leftMargin">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
+         <number>3</number>
+        </property>
+        <property name="rightMargin">
+         <number>3</number>
+        </property>
+        <property name="bottomMargin">
+         <number>3</number>
+        </property>
+        <item row="2" column="3">
+         <widget class="QGroupBox" name="gbValue">
+          <property name="toolTip">
+           <string>Takes effect at next measurement start.</string>
+          </property>
+          <property name="title">
+           <string>Value</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="leftMargin">
+            <number>3</number>
+           </property>
+           <property name="topMargin">
+            <number>3</number>
+           </property>
+           <property name="rightMargin">
+            <number>3</number>
+           </property>
+           <property name="bottomMargin">
+            <number>3</number>
+           </property>
+           <item>
+            <widget class="QRadioButton" name="cbValueLast">
+             <property name="toolTip">
+              <string>Take the last value since the last datapoint.</string>
+             </property>
+             <property name="text">
+              <string>Last</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="cbValueMean">
+             <property name="toolTip">
+              <string>Take the average of the values since the last datapoint.</string>
+             </property>
+             <property name="text">
+              <string>Mean</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="cbRepeat">
+             <property name="toolTip">
+              <string>If the value is nan, repeat the last value instead.</string>
+             </property>
+             <property name="text">
+              <string>Repeat</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="4" column="0" colspan="4">
+         <widget class="QLineEdit" name="leVariables">
+          <property name="toolTip">
+           <string>Variables to save. This line is appended to the header. Use time for the time in seconds today.</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="2" colspan="2">
+         <widget class="QLabel" name="lbValues">
+          <property name="text">
+           <string>Values</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0" colspan="4">
+         <widget class="QPlainTextEdit" name="leHeader">
+          <property name="toolTip">
+           <string>Header of the save file.</string>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="4">
+         <widget class="QLineEdit" name="leSavedName">
+          <property name="toolTip">
+           <string>Name of the saved file.</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0" colspan="2">
+         <widget class="QLabel" name="lbVariables">
+          <property name="toolTip">
+           <string>Variable values of the last data point.</string>
+          </property>
+          <property name="text">
+           <string>Variables</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="3">
+         <widget class="QGroupBox" name="gbTrigger">
+          <property name="toolTip">
+           <string>Takes effect immediately!</string>
+          </property>
+          <property name="title">
+           <string>Trigger</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout">
+           <property name="verticalSpacing">
+            <number>3</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QRadioButton" name="cbTimer">
+             <property name="toolTip">
+              <string>Trigger after a certain interval.</string>
+             </property>
+             <property name="text">
+              <string>Timer</string>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="sbTimeout">
+             <property name="toolTip">
+              <string>Triggering interval.</string>
+             </property>
+             <property name="suffix">
+              <string> ms</string>
+             </property>
+             <property name="minimum">
+              <number>10</number>
+             </property>
+             <property name="maximum">
+              <number>100000</number>
+             </property>
+             <property name="singleStep">
+              <number>10</number>
+             </property>
+             <property name="value">
+              <number>1000</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QRadioButton" name="cbTrigger">
+             <property name="toolTip">
+              <string>If this variable is updated, fire a trigger.</string>
+             </property>
+             <property name="text">
+              <string>Variable</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="leTrigger">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="toolTip">
+              <string>Variable name to trigger at.</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>248</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuApplication">
+    <property name="title">
+     <string>&amp;Application</string>
+    </property>
+    <addaction name="actionSettings"/>
+    <addaction name="actionClose"/>
+    <addaction name="actionHide_Toolbar"/>
+   </widget>
+   <widget class="QMenu" name="menuConfigurations">
+    <property name="title">
+     <string>&amp;Measurement</string>
+    </property>
+    <addaction name="actionStart"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionPause"/>
+    <addaction name="separator"/>
+    <addaction name="actionAutoSave"/>
+    <addaction name="actionLimitDataLength"/>
+    <addaction name="separator"/>
+    <addaction name="actionConfig"/>
+    <addaction name="actionCopyLastDatapoint"/>
+   </widget>
+   <widget class="QMenu" name="menuPlots">
+    <property name="title">
+     <string>&amp;Plots</string>
+    </property>
+    <addaction name="actionSinglePlot"/>
+    <addaction name="actionMultiPlot"/>
+    <addaction name="actionClearPlots"/>
+   </widget>
+   <addaction name="menuApplication"/>
+   <addaction name="menuConfigurations"/>
+   <addaction name="menuPlots"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionStart"/>
+   <addaction name="actionSave"/>
+   <addaction name="actionAutoSave"/>
+   <addaction name="actionLimitDataLength"/>
+   <addaction name="actionPause"/>
+   <addaction name="separator"/>
+   <addaction name="actionSinglePlot"/>
+   <addaction name="actionMultiPlot"/>
+   <addaction name="actionClearPlots"/>
+   <addaction name="separator"/>
+   <addaction name="actionHide_Toolbar"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionSettings">
+   <property name="text">
+    <string>&amp;Settings...</string>
+   </property>
+   <property name="toolTip">
+    <string>Open settings dialog</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>&amp;Close</string>
+   </property>
+  </action>
+  <action name="actionConfig">
+   <property name="text">
+    <string>Create configuration file</string>
+   </property>
+  </action>
+  <action name="actionAutoSave">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Automatically save</string>
+   </property>
+   <property name="iconText">
+    <string>Autosave</string>
+   </property>
+   <property name="toolTip">
+    <string>Automatically save the data regularly.</string>
+   </property>
+  </action>
+  <action name="actionCopyLastDatapoint">
+   <property name="text">
+    <string>Copy &amp;last datapoint</string>
+   </property>
+   <property name="toolTip">
+    <string>Copy last datapoint to the clipboard.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionStart">
+   <property name="text">
+    <string>&amp;Start</string>
+   </property>
+   <property name="toolTip">
+    <string>Start a measurement deleting the old values.</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Sa&amp;ve</string>
+   </property>
+   <property name="toolTip">
+    <string>Save the current data from the beginning until now.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionPause">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Pause</string>
+   </property>
+   <property name="toolTip">
+    <string>Pause the current measurement.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionSinglePlot">
+   <property name="text">
+    <string>&amp;Single Plot</string>
+   </property>
+   <property name="toolTip">
+    <string>Spawn a single plot.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="actionMultiPlot">
+   <property name="text">
+    <string>&amp;Multi Plot</string>
+   </property>
+   <property name="toolTip">
+    <string>Spawn a multi plot.</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
+   </property>
+  </action>
+  <action name="actionHide_Toolbar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Hide Toolbar</string>
+   </property>
+   <property name="iconText">
+    <string>Hide</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionClearPlots">
+   <property name="text">
+    <string>Clear Plots</string>
+   </property>
+   <property name="iconText">
+    <string>Clear</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear all plots.</string>
+   </property>
+  </action>
+  <action name="actionLimitDataLength">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Limit data length</string>
+   </property>
+   <property name="iconText">
+    <string>Limit</string>
+   </property>
+   <property name="toolTip">
+    <string>Limit data length, deleting older data!</string>
+   </property>
+  </action>
+ </widget>
+ <tabstops>
+  <tabstop>cbTimer</tabstop>
+  <tabstop>sbTimeout</tabstop>
+  <tabstop>cbTrigger</tabstop>
+  <tabstop>leTrigger</tabstop>
+  <tabstop>cbValueLast</tabstop>
+  <tabstop>cbValueMean</tabstop>
+  <tabstop>cbRepeat</tabstop>
+  <tabstop>leHeader</tabstop>
+  <tabstop>leVariables</tabstop>
+  <tabstop>leSavedName</tabstop>
+  <tabstop>tabWidget</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>actionHide_Toolbar</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>toolBar</receiver>
+   <slot>setHidden(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>222</x>
+     <y>32</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
