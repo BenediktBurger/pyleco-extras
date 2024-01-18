@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>532</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>LogLogger</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QWidget" name="widget" native="true">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLineEdit" name="leSender">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="pbSubscribe">
+         <property name="text">
+          <string>Subscribe</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="bbSender">
+         <property name="toolTip">
+          <string>Logs of which Component?</string>
+         </property>
+         <property name="maxVisibleItems">
+          <number>25</number>
+         </property>
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToContents</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <widget class="QTableView" name="tableView">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>true</bool>
+       </attribute>
+      </widget>
+      <widget class="QPlainTextEdit" name="leDetails">
+       <property name="toolTip">
+        <string>Details of the selected field.</string>
+       </property>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>532</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuApplication">
+    <property name="title">
+     <string>Application</string>
+    </property>
+    <addaction name="actionSettings"/>
+    <addaction name="actionClose"/>
+   </widget>
+   <widget class="QMenu" name="menuLog">
+    <property name="title">
+     <string>Log</string>
+    </property>
+    <addaction name="actionSave"/>
+    <addaction name="actionReset"/>
+    <addaction name="actionSet_Debug"/>
+    <addaction name="actionSet_Info"/>
+    <addaction name="actionSet_Warning"/>
+    <addaction name="actionSet_Error"/>
+    <addaction name="separator"/>
+    <addaction name="actionRescale"/>
+   </widget>
+   <addaction name="menuApplication"/>
+   <addaction name="menuLog"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionSettings">
+   <property name="text">
+    <string>&amp;Settings...</string>
+   </property>
+   <property name="toolTip">
+    <string>Open settings dialog</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>&amp;Close</string>
+   </property>
+  </action>
+  <action name="actionPublish">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Publish</string>
+   </property>
+   <property name="toolTip">
+    <string>Publish the values.</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="toolTip">
+    <string>Save the current log into the selected folder.</string>
+   </property>
+  </action>
+  <action name="actionReset">
+   <property name="text">
+    <string>Reset</string>
+   </property>
+  </action>
+  <action name="actionSet_Debug">
+   <property name="text">
+    <string>Set Debug</string>
+   </property>
+  </action>
+  <action name="actionSet_Info">
+   <property name="text">
+    <string>Set Info</string>
+   </property>
+  </action>
+  <action name="actionSet_Warning">
+   <property name="text">
+    <string>Set Warning</string>
+   </property>
+  </action>
+  <action name="actionSet_Error">
+   <property name="text">
+    <string>Set Error</string>
+   </property>
+  </action>
+  <action name="actionRescale">
+   <property name="text">
+    <string>Rescale</string>
+   </property>
+   <property name="toolTip">
+    <string>Rescale the log table to the contents.</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
