@@ -18,8 +18,7 @@ from pyleco.directors.starter_director import StarterDirector
 from pyleco.core.message import Message
 from pyleco.management.starter import Status
 
-from devices.base_main_window import LECOBaseMainWindow
-from devices.gui_utils import start_app
+from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindow, start_app
 
 # Local packages.
 from data.Settings import Settings

@@ -9,6 +9,7 @@ from pyleco.core import COORDINATOR_PORT, PROXY_SENDING_PORT
 from pyleco.core.internal_protocols import CommunicatorProtocol, SubscriberProtocol, Protocol
 from pyleco.core.message import Message
 from pyleco.utils.qt_listener import QtListener
+from pyleco.utils.parser import parse_command_line_parameters
 
 
 log = logging.getLogger("__main__")
@@ -112,7 +113,7 @@ class _LECOBaseMainWindow(QtWidgets.QMainWindow):
 
 
 class LECOBaseMainWindow(_LECOBaseMainWindow):
-    """Base MainWindow subclass with a LECO listener."""
+    """Base MainWindow subclass with a LECO listener, UI defined via ui file."""
 
     def __init__(self,
                  name: str,
@@ -146,3 +147,20 @@ class LECOBaseMainWindowNoDesigner(_LECOBaseMainWindow):
         if mb is not None:
             app_m = mb.addMenu("Application")
             app_m.addActions([self.actionClose, self.actionSettings])  # type: ignore
+
+
+def start_app(main_window_class, window_kwargs: dict | None = None,
+              logger: Optional[logging.Logger] = None,
+              **kwargs) -> None:
+    """Start a Qt App reading command line parameters."""
+    doc = main_window_class.__doc__
+    kwargs.setdefault('parser_description', doc.split(":param", maxsplit=1)[0] if doc else None)
+    parsed_kwargs = parse_command_line_parameters(logger=logger, **kwargs)
+    if window_kwargs is None:
+        window_kwargs = parsed_kwargs
+    else:
+        window_kwargs.update(parsed_kwargs)
+    app = QtWidgets.QApplication([])  # create an application
+    # start the first widget, the main window:
+    mainwindow = main_window_class(**window_kwargs)  # noqa: F841
+    app.exec()  # start the application with its Event loop

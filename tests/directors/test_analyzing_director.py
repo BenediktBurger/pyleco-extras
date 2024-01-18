@@ -7,8 +7,8 @@ from pymeasure.instruments import Instrument, Channel
 from pyleco.core.message import Message, MessageTypes
 from pyleco.test import FakeCommunicator
 
-from devices.pyleco_addons.analyzing_director import (create_device_copy, AnalyzingDirector,
-                                                      RemoteCall)
+from pyleco_extras.directors.analyzing_director import (create_device_copy, AnalyzingDirector,
+                                                        RemoteCall)
 
 
 cid = b"conversation_id;"
