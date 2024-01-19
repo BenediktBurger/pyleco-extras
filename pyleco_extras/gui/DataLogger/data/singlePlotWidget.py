@@ -29,44 +29,34 @@ class SinglePlotWidget(PlotGroupWidget):
 
         self.log.info("Plot created.")
 
-    def _setup_toolbar(self):
-        self.toolbar = QtWidgets.QToolBar(self)
+    def _setup_actions(self) -> None:
+        super()._setup_actions()
         self.actionDots = QtGui.QAction(".")  # type: ignore
         self.actionDots.setToolTip("Show dots instead of lines.")
-        self.actionly = QtGui.QAction("ly")  # type: ignore
-        self.actionly.setToolTip("Show a yellow line.")
-        self.actionlg = QtGui.QAction("lg")  # type: ignore
-        self.actionlg.setToolTip("Show a green line.")
+        self.actionDots.setCheckable(True)
         self.actionmm = QtGui.QAction("mm")  # type: ignore
         self.actionmm.setToolTip("Show red, dashed lines for global min and max.")
+        self.actionmm.setCheckable(True)
         self.actionlmm = QtGui.QAction("lmm")  # type: ignore
         self.actionlmm.setToolTip("Show orange, dashed lines for local min and max.")
-        self.actionv = QtGui.QAction("v")  # type: ignore
-        self.actionv.setToolTip("Show the value with a larger fontsize.")
-        for action in (self.actionDots, self.actionly, self.actionlg, self.actionmm,
-                       self.actionlmm, self.actionv):
-            action.setCheckable(True)
-            self.toolbar.addAction(action)
-        self.toolbar.setVisible(False)
+        self.actionlmm.setCheckable(True)
 
         # # Connect actions to slots
         self.actionDots.toggled.connect(self.setStyle)
-        self.actionly.toggled.connect(self.toggleLineY)
-        self.actionlg.toggled.connect(self.toggleLineG)
         self.actionmm.toggled.connect(self.toggleMM)
         self.actionlmm.toggled.connect(self.toggleLMM)
-        self.actionv.toggled.connect(self.toggleV)
 
     def _setup_ui(self):
-        self._setup_toolbar()
         super()._setup_ui()
+        for action in (self.actionDots, self.actionly, self.actionlg, self.actionmm,
+                       self.actionlmm, self.actionv):
+            self.toolbar.addAction(action)
         self.bbY = QtWidgets.QComboBox()
         self.bbY.setMaxVisibleItems(15)
         self.bbY.setToolTip("Y axis.")
 
         # # Connect widgets to slots
         self.bbY.activated.connect(self.setY)
-        self.pbOptions.toggled.connect(self.toolbar.setVisible)
 
     def _layout(self):
         vbox = QtWidgets.QVBoxLayout(self)
@@ -98,8 +88,6 @@ class SinglePlotWidget(PlotGroupWidget):
             "dots": self.actionDots.isChecked(),
             "lmm": self.actionlmm.isChecked(),
             "mm": self.actionmm.isChecked(),
-            "ly": self.lineY.value() if self.actionly.isChecked() else False,
-            "lg": self.lineG.value() if self.actionlg.isChecked() else False,
         })
         return configuration
 
@@ -114,14 +102,6 @@ class SinglePlotWidget(PlotGroupWidget):
                 self.actionlmm.setChecked(value)
             elif key == "mm":
                 self.actionmm.setChecked(value)
-            elif key == "ly":
-                if value is not False:
-                    self.toggleLineY(True, start=value)
-                    self.actionly.setChecked(True)
-            elif key == "lg":
-                if value is not False:
-                    self.toggleLineG(True, start=value)
-                    self.actionlg.setChecked(True)
         self.setY()
 
     @pyqtSlot()
@@ -173,24 +153,6 @@ class SinglePlotWidget(PlotGroupWidget):
             self.reference.setSymbol(None)
 
     @pyqtSlot(bool)
-    def toggleLineY(self, checked, start: float = 0) -> None:
-        """Toggle to show a horizontal line."""
-        try:
-            self.lineY.setVisible(checked)
-        except AttributeError:
-            if checked:
-                self.lineY = self.plotWidget.addLine(y=start, pen='y', movable=True)
-
-    @pyqtSlot(bool)
-    def toggleLineG(self, checked: bool, start: float = 0) -> None:
-        """Toggle to show a horizontal line."""
-        try:
-            self.lineG.setVisible(checked)
-        except AttributeError:
-            if checked:
-                self.lineG = self.plotWidget.addLine(y=start, pen='g', movable=True)
-
-    @pyqtSlot(bool)
     def toggleMM(self, checked: bool):
         """Add lines for global min and max."""
         if checked:
@@ -213,16 +175,6 @@ class SinglePlotWidget(PlotGroupWidget):
         else:
             for line in self.linesLMM:
                 self.plotWidget.removeItem(line)
-
-    @pyqtSlot(bool)
-    def toggleV(self, checked: bool) -> None:
-        """Make the font size large."""
-        font = QtGui.QFont()
-        if checked:
-            font.setPointSize(48)
-            self.lbValue.setFont(font)
-        else:
-            self.lbValue.setFont(font)
 
     def getYkeys(self):
         """Get the available keys for the y axis."""

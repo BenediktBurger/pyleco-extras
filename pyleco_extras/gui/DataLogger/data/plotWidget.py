@@ -9,7 +9,7 @@ from typing import Any, Protocol
 
 import pint
 import pyqtgraph as pg
-from qtpy import QtCore, QtWidgets
+from qtpy import QtCore, QtGui, QtWidgets
 from qtpy.QtCore import Slot as pyqtSlot  # type: ignore
 
 
@@ -24,6 +24,7 @@ class PlotGroupWidget(QtWidgets.QWidget):
 
     def __init__(self, parent: DataLoggerGuiProtocol, autoCut=0, grid=False, log=None, **kwargs):
         super().__init__()
+        self._setup_actions()
         self._setup_ui()
         self._layout()
         self.show()
@@ -48,9 +49,30 @@ class PlotGroupWidget(QtWidgets.QWidget):
 
         self.setX()
 
-    def _setup_ui(self):
+    def _setup_actions(self) -> None:
+        """Set up all the actions."""
+        self.actionly = QtGui.QAction("ly")  # type: ignore
+        self.actionly.setToolTip("Show a yellow line.")
+        self.actionly.setCheckable(True)
+        self.actionlg = QtGui.QAction("lg")  # type: ignore
+        self.actionlg.setToolTip("Show a green line.")
+        self.actionlg.setCheckable(True)
+        self.actionv = QtGui.QAction("v")  # type: ignore
+        self.actionv.setToolTip("Show the value with a larger fontsize.")
+        self.actionv.setCheckable(True)
+
+        # Connect actions to slots
+        self.actionly.toggled.connect(self.toggleLineY)
+        self.actionlg.toggled.connect(self.toggleLineG)
+        self.actionv.toggled.connect(self.toggleV)
+
+    def _setup_ui(self) -> None:
         """Generate the UI elements."""
         self.plotWidget = pg.PlotWidget()
+        self.plotWidget.addAction(self.actionlg)
+        self.plotWidget.addAction(self.actionly)
+        self.toolbar = QtWidgets.QToolBar(self)
+        self.toolbar.setVisible(False)
         self.pbOptions = QtWidgets.QToolButton()
         self.pbOptions.setText("...")
         self.pbOptions.setCheckable(True)
@@ -68,8 +90,9 @@ class PlotGroupWidget(QtWidgets.QWidget):
         # # Connect widgets to slots
         self.bbX.activated.connect(self.setX)
         self.sbAutoCut.valueChanged.connect(self.setAutoCut)
+        self.pbOptions.toggled.connect(self.toolbar.setVisible)
 
-    def _layout(self):
+    def _layout(self) -> None:
         """Organize the elements into a layout."""
         raise NotImplementedError
 
@@ -93,6 +116,8 @@ class PlotGroupWidget(QtWidgets.QWidget):
             "type": type(self).__name__,
             "x_key": self.bbX.currentText(),
             "autoCut": self.autoCut,
+            "ly": self.lineY.value() if self.actionly.isChecked() else False,
+            "lg": self.lineG.value() if self.actionlg.isChecked() else False,
         }
         return configuration
 
@@ -102,6 +127,14 @@ class PlotGroupWidget(QtWidgets.QWidget):
                 self.bbX.setCurrentText(value)
             elif key == "autoCut":
                 self.sbAutoCut.setValue(value)
+            elif key == "ly":
+                if value is not False:
+                    self.toggleLineY(True, start=value)
+                    self.actionly.setChecked(True)
+            elif key == "lg":
+                if value is not False:
+                    self.toggleLineG(True, start=value)
+                    self.actionlg.setChecked(True)
 
     @pyqtSlot()
     def update(self):
@@ -159,3 +192,32 @@ class PlotGroupWidget(QtWidgets.QWidget):
         """Update the combobox keys."""
         self.getXkeys()
         self.getYkeys()
+
+    # Action slots
+    @pyqtSlot(bool)
+    def toggleLineY(self, checked, start: float = 0) -> None:
+        """Toggle to show a horizontal line."""
+        try:
+            self.lineY.setVisible(checked)
+        except AttributeError:
+            if checked:
+                self.lineY = self.plotWidget.addLine(y=start, pen='y', movable=True)
+
+    @pyqtSlot(bool)
+    def toggleLineG(self, checked: bool, start: float = 0) -> None:
+        """Toggle to show a horizontal line."""
+        try:
+            self.lineG.setVisible(checked)
+        except AttributeError:
+            if checked:
+                self.lineG = self.plotWidget.addLine(y=start, pen='g', movable=True)
+
+    @pyqtSlot(bool)
+    def toggleV(self, checked: bool) -> None:
+        """Make the font size large."""
+        font = QtGui.QFont()
+        if checked:
+            font.setPointSize(48)
+            self.lbValue.setFont(font)
+        else:
+            self.lbValue.setFont(font)

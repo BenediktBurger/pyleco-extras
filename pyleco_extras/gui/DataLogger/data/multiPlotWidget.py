@@ -45,8 +45,17 @@ class MultiPlotWidget(PlotGroupWidget):
 
         self.log.info("MultiPlot created.")
 
+    def _setup_actions(self):
+        super()._setup_actions()
+        self.action_show_lines = QtGui.QAction("ls")
+        self.action_show_lines.setToolTip("Show the lines setup.")
+        self.action_show_lines.setCheckable(True)
+        self.action_show_lines.triggered.connect(self.show_line_settings)
+
     def _setup_ui(self):
         super()._setup_ui()
+        for action in (self.actionlg, self.actionly, self.actionv, self.action_show_lines):
+            self.toolbar.addAction(action)
         self.tvLines = QtWidgets.QTableView()
         self.tvLines.setToolTip('<html><head/><body><p>Select the color of the key to show. Either '
                                 'as a name or as RGB.</p><p>Prefix &quot;n,&quot; to show it to '
@@ -61,11 +70,14 @@ class MultiPlotWidget(PlotGroupWidget):
         self.pbAutoRange.setToolTip("Set all axes to auto Y range (Ctrl + A).")
         self.pbAutoRange.setShortcut("Ctrl+A")
         # self.bbX: minimum size 90x0
-        # self.pbOptions
+        self.pbLines = QtWidgets.QToolButton()
+        self.pbLines.setText("ls")
+        self.pbLines.setToolTip("Show the lines setup.")
+        self.pbLines.setCheckable(True)
+        self.pbLines.clicked.connect(self.show_line_settings)
 
         # Connect actions to slots
         self.pbAutoRange.clicked.connect(self.setAutoRange)
-        self.pbOptions.clicked.connect(self.optionsClicked)
 
     def _layout(self):
         vbox = QtWidgets.QVBoxLayout(self)
@@ -82,11 +94,13 @@ class MultiPlotWidget(PlotGroupWidget):
         hbox2 = QtWidgets.QHBoxLayout()
         hbox2.setSpacing(1)
         hbox2.setContentsMargins(0, 0, 0, 0)
-        for widget in (self.pbAutoRange, self.bbX, self.sbAutoCut, self.lbValue, self.pbOptions):
+        for widget in (self.pbOptions, self.pbAutoRange, self.bbX, self.sbAutoCut, self.lbValue,
+                       self.pbLines,):
             hbox2.addWidget(widget)
         hbox2.setStretchFactor(self.bbX, 1)
         hbox2.setStretchFactor(self.lbValue, 3)
 
+        vbox.addWidget(self.toolbar)
         vbox.addLayout(hbox1)
         vbox.addLayout(hbox2)
         self.setLayout(vbox)
@@ -157,7 +171,7 @@ class MultiPlotWidget(PlotGroupWidget):
         lines = configuration.get("lines")
         if lines is not None:
             self.set_lines(lines)
-            self.optionsClicked(False)
+            self.show_line_settings(False)
         else:
             self.pbOptions.setChecked(True)
 
@@ -281,9 +295,10 @@ class MultiPlotWidget(PlotGroupWidget):
         self.tvLines.resizeColumnsToContents()
 
     @pyqtSlot(bool)
-    def optionsClicked(self, checked):
+    def show_line_settings(self, checked: bool) -> None:
         """Restore the table view, once the "show" button is clicked."""
         self.tvLines.setVisible(checked)
+        self.pbLines.setChecked(checked)
         if checked:
             try:
                 self._adjustView()
