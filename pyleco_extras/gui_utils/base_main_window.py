@@ -10,6 +10,7 @@ from pyleco.core.internal_protocols import CommunicatorProtocol, SubscriberProto
 from pyleco.core.message import Message
 from pyleco.utils.qt_listener import QtListener
 from pyleco.utils.parser import parse_command_line_parameters
+from pyleco.utils.data_publisher import DataPublisher
 
 
 log = logging.getLogger("__main__")
@@ -25,6 +26,7 @@ class _LECOBaseMainWindow(QtWidgets.QMainWindow):
 
     listener: QtListener
     communicator: FullCommunicator
+    publisher: DataPublisher
 
     settings_dialog_class: type[QtWidgets.QDialog]
     actionClose: QtGui.QAction  # type: ignore
@@ -53,6 +55,7 @@ class _LECOBaseMainWindow(QtWidgets.QMainWindow):
             app.setApplicationName(name)
 
         # create the listener and the communicator
+        self.publisher = DataPublisher(full_name=name)
         self.listener = QtListener(name=name,
                                    host=host, port=port,
                                    data_port=data_port,
@@ -60,6 +63,7 @@ class _LECOBaseMainWindow(QtWidgets.QMainWindow):
         self.listener.signals.message.connect(self.message_received)
         try:
             self.listener.signals.name_changed.connect(self.show_namespace_information)
+            self.listener.signals.name_changed.connect(self.publisher.set_full_name)
         except AttributeError:
             pass  # for older pyleco versions.
         self.listener.start_listen()
