@@ -55,7 +55,7 @@ class _LECOBaseMainWindow(QtWidgets.QMainWindow):
             app.setApplicationName(name)
 
         # create the listener and the communicator
-        self.publisher = DataPublisher(full_name=name)
+        self.publisher = DataPublisher(full_name=name, host=host)
         self.listener = QtListener(name=name,
                                    host=host, port=port,
                                    data_port=data_port,
