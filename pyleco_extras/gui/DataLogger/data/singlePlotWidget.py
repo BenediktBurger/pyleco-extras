@@ -31,13 +31,16 @@ class SinglePlotWidget(PlotGroupWidget):
 
     def _setup_actions(self) -> None:
         super()._setup_actions()
-        self.actionDots = QtGui.QAction(".")  # type: ignore
+        self.actionDots = QtGui.QAction("Shod dots")  # type: ignore
+        self.actionDots.setIconText(".")
         self.actionDots.setToolTip("Show dots instead of lines.")
         self.actionDots.setCheckable(True)
-        self.actionmm = QtGui.QAction("mm")  # type: ignore
+        self.actionmm = QtGui.QAction("Show global limits lines")  # type: ignore
+        self.actionmm.setIconText("mm")
         self.actionmm.setToolTip("Show red, dashed lines for global min and max.")
         self.actionmm.setCheckable(True)
-        self.actionlmm = QtGui.QAction("lmm")  # type: ignore
+        self.actionlmm = QtGui.QAction("Show local limits lines")  # type: ignore
+        self.actionlmm.setIconText("lmm")
         self.actionlmm.setToolTip("Show orange, dashed lines for local min and max.")
         self.actionlmm.setCheckable(True)
 
@@ -49,8 +52,10 @@ class SinglePlotWidget(PlotGroupWidget):
     def _setup_ui(self):
         super()._setup_ui()
         for action in (self.actionDots, self.actionly, self.actionlg, self.actionmm,
-                       self.actionlmm, self.actionv, self.actionvls, self.actionEvaluate):
+                       self.actionlmm, self.actionv, self.actionvls, self.actionEvaluate,
+                       self.action_show_toolbar):
             self.toolbar.addAction(action)
+            self.menu.addAction(action)
         self.bbY = QtWidgets.QComboBox()
         self.bbY.setMaxVisibleItems(15)
         self.bbY.setToolTip("Y axis.")
@@ -59,20 +64,22 @@ class SinglePlotWidget(PlotGroupWidget):
         self.bbY.activated.connect(self.setY)
 
     def _layout(self):
+        button_box = QtWidgets.QHBoxLayout()
+        button_box.setSpacing(2)
+        button_box.setContentsMargins(0, 0, 0, 0)
+        for widget in (self.pbOptions, self.bbY, self.bbX, self.sbAutoCut, self.lbValue,
+                       self.lbEvaluation):
+            button_box.addWidget(widget)
+        button_box.setStretchFactor(self.bbY, 1)
+        button_box.setStretchFactor(self.bbX, 1)
+        button_box.setStretchFactor(self.lbValue, 3)
+
         vbox = QtWidgets.QVBoxLayout(self)
         vbox.setSpacing(1)
         vbox.setContentsMargins(0, 0, 0, 0)
-
-        hbox = QtWidgets.QHBoxLayout()
-        hbox.setSpacing(2)
-        hbox.setContentsMargins(0, 0, 0, 0)
-        for widget in (self.pbOptions, self.bbY, self.bbX, self.sbAutoCut, self.lbValue,
-                       self.lbEvaluation):
-            hbox.addWidget(widget)
-
         vbox.addWidget(self.toolbar)
         vbox.addWidget(self.plotWidget)
-        vbox.addLayout(hbox)
+        vbox.addLayout(button_box)
         self.setLayout(vbox)
 
     def setup_plot(self):

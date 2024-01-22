@@ -47,7 +47,8 @@ class MultiPlotWidget(PlotGroupWidget):
 
     def _setup_actions(self):
         super()._setup_actions()
-        self.action_show_lines = QtGui.QAction("ls")
+        self.action_show_lines = QtGui.QAction("Lines setup...")  # type: ignore
+        self.action_show_lines.setIconText("ls")
         self.action_show_lines.setToolTip("Show the lines setup.")
         self.action_show_lines.setCheckable(True)
         self.action_show_lines.triggered.connect(self.show_line_settings)
@@ -55,8 +56,9 @@ class MultiPlotWidget(PlotGroupWidget):
     def _setup_ui(self):
         super()._setup_ui()
         for action in (self.actionlg, self.actionly, self.actionv, self.action_show_lines,
-                       self.actionvls, self.actionEvaluate,):
+                       self.actionvls, self.actionEvaluate, self.action_show_toolbar):
             self.toolbar.addAction(action)
+            self.menu.addAction(action)
         self.tvLines = QtWidgets.QTableView()
         self.tvLines.setToolTip('<html><head/><body><p>Select the color of the key to show. Either '
                                 'as a name or as RGB.</p><p>Prefix &quot;n,&quot; to show it to '
@@ -84,15 +86,15 @@ class MultiPlotWidget(PlotGroupWidget):
         display_box = QtWidgets.QHBoxLayout()
         display_box.setSpacing(1)
         display_box.setContentsMargins(0, 0, 0, 0)
-        for widget in (self.plotWidget, self.tvLines):
+        for widget in (self.tvLines, self.plotWidget):
             display_box.addWidget(widget)
         display_box.setStretchFactor(self.plotWidget, 10)
 
         button_box = QtWidgets.QHBoxLayout()
         button_box.setSpacing(1)
         button_box.setContentsMargins(0, 0, 0, 0)
-        for widget in (self.pbOptions, self.pbAutoRange, self.bbX, self.sbAutoCut, self.lbValue,
-                       self.lbEvaluation, self.pbLines,):
+        for widget in (self.pbOptions, self.pbAutoRange, self.pbLines, self.bbX, self.sbAutoCut,
+                       self.lbValue, self.lbEvaluation,):
             button_box.addWidget(widget)
         button_box.setStretchFactor(self.bbX, 1)
         button_box.setStretchFactor(self.lbValue, 3)

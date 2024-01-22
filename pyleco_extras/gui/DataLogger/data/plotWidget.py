@@ -53,19 +53,29 @@ class PlotGroupWidget(QtWidgets.QWidget):
 
     def _setup_actions(self) -> None:
         """Set up all the actions."""
-        self.actionly = QtGui.QAction("ly")  # type: ignore
+        self.action_show_toolbar = QtGui.QAction("Show toolbar")  # type: ignore
+        self.action_show_toolbar.setIconText("tb")
+        self.action_show_toolbar.setToolTip("Show the toolbar (Ctrl + D).")
+        self.action_show_toolbar.setCheckable(True)
+        self.action_show_toolbar.setShortcut("Ctrl+D")
+        self.actionly = QtGui.QAction("Show yellow line")  # type: ignore
+        self.actionly.setIconText("ly")
         self.actionly.setToolTip("Show a yellow line.")
         self.actionly.setCheckable(True)
-        self.actionlg = QtGui.QAction("lg")  # type: ignore
+        self.actionlg = QtGui.QAction("Show green line")  # type: ignore
+        self.actionlg.setIconText("lg")
         self.actionlg.setToolTip("Show a green line.")
         self.actionlg.setCheckable(True)
-        self.actionv = QtGui.QAction("v")  # type: ignore
+        self.actionv = QtGui.QAction("Large value font")  # type: ignore
+        self.actionv.setIconText("v")
         self.actionv.setToolTip("Show the value with a larger fontsize.")
         self.actionv.setCheckable(True)
-        self.actionvls = QtGui.QAction("||")  # type: ignore
+        self.actionvls = QtGui.QAction("Show vertical lines")  # type: ignore
+        self.actionvls.setIconText("||")
         self.actionvls.setToolTip("Show vertical lines.")
         self.actionvls.setCheckable(True)
-        self.actionEvaluate = QtGui.QAction("ev")  # type: ignore
+        self.actionEvaluate = QtGui.QAction("Evaluate data")  # type: ignore
+        self.actionEvaluate.setIconText("ev")
         self.actionEvaluate.setToolTip("Evaluate the data.")
         self.actionEvaluate.setCheckable(True)
 
@@ -83,11 +93,10 @@ class PlotGroupWidget(QtWidgets.QWidget):
         self.plotWidget.addAction(self.actionly)
         self.toolbar = QtWidgets.QToolBar(self)
         self.toolbar.setVisible(False)
+        self.menu = QtWidgets.QMenu()
         self.pbOptions = QtWidgets.QToolButton()
         self.pbOptions.setText("...")
-        self.pbOptions.setCheckable(True)
-        self.pbOptions.setToolTip("Show plot options (Ctrl + D).")
-        self.pbOptions.setShortcut("Ctrl+D")
+        self.pbOptions.setToolTip("Show plot options.")
         self.bbX = QtWidgets.QComboBox()
         self.bbX.setMaxVisibleItems(15)
         self.bbX.setToolTip("X axis.")
@@ -96,6 +105,7 @@ class PlotGroupWidget(QtWidgets.QWidget):
         self.sbAutoCut.setToolTip("Show the last number of values. If 0, show all values.")
         self.lbValue = QtWidgets.QLabel("last value")
         self.lbValue.setToolTip("Last value of the current axis.")
+        self.lbValue.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)  # noqa
 
         self.lbEvaluation = QtWidgets.QLabel("-")
         self.lbEvaluation.setToolTip("Mean and standard deviation of the value in the limits.")
@@ -103,8 +113,9 @@ class PlotGroupWidget(QtWidgets.QWidget):
         # # Connect widgets to slots
         self.bbX.activated.connect(self.setX)
         self.sbAutoCut.valueChanged.connect(self.setAutoCut)
-        self.pbOptions.toggled.connect(self.toolbar.setVisible)
+        self.pbOptions.clicked.connect(self.show_menu)
         self.actionEvaluate.toggled.connect(self.lbEvaluation.setVisible)
+        self.action_show_toolbar.toggled.connect(self.toolbar.setVisible)
 
     def _layout(self) -> None:
         """Organize the elements into a layout."""
@@ -166,6 +177,9 @@ class PlotGroupWidget(QtWidgets.QWidget):
     def clear_plot(self):
         """Clear the plots."""
         raise NotImplementedError
+
+    def show_menu(self):
+        self.menu.popup(self.pbOptions.mapToGlobal(QtCore.QPoint(0, 0)))
 
     def generate_axis_label(self, key: str) -> str:
         """Get the units string of `key`."""
@@ -276,4 +290,4 @@ class PlotGroupWidget(QtWidgets.QWidget):
             data = self.main_window.lists[y_key][-self.autoCut:]
         mean = np.nanmean(a=data)
         std = np.nanstd(a=data)
-        self.lbEvaluation.setText(f"{mean:g}\u00b1{std:g}")
+        self.lbEvaluation.setText(f"({mean:g}\u00b1{std:g})")
