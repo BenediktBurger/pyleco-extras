@@ -5,8 +5,10 @@ Created on Fri Jul  9 14:32:56 2021 by Benedikt Burger.
 """
 
 import logging
+import math
 from typing import Any, Protocol
 
+import numpy as np
 import pint
 import pyqtgraph as pg
 from qtpy import QtCore, QtGui, QtWidgets
@@ -60,11 +62,19 @@ class PlotGroupWidget(QtWidgets.QWidget):
         self.actionv = QtGui.QAction("v")  # type: ignore
         self.actionv.setToolTip("Show the value with a larger fontsize.")
         self.actionv.setCheckable(True)
+        self.actionvls = QtGui.QAction("||")  # type: ignore
+        self.actionvls.setToolTip("Show vertical lines.")
+        self.actionvls.setCheckable(True)
+        self.actionEvaluate = QtGui.QAction("ev")  # type: ignore
+        self.actionEvaluate.setToolTip("Evaluate the data.")
+        self.actionEvaluate.setCheckable(True)
 
         # Connect actions to slots
         self.actionly.toggled.connect(self.toggleLineY)
         self.actionlg.toggled.connect(self.toggleLineG)
         self.actionv.toggled.connect(self.toggleV)
+        self.actionvls.toggled.connect(self.toggleVerticalLines)
+        self.actionEvaluate.toggled.connect(self.evaluate_data)
 
     def _setup_ui(self) -> None:
         """Generate the UI elements."""
@@ -87,10 +97,14 @@ class PlotGroupWidget(QtWidgets.QWidget):
         self.lbValue = QtWidgets.QLabel("last value")
         self.lbValue.setToolTip("Last value of the current axis.")
 
+        self.lbEvaluation = QtWidgets.QLabel("-")
+        self.lbEvaluation.setToolTip("Mean and standard deviation of the value in the limits.")
+
         # # Connect widgets to slots
         self.bbX.activated.connect(self.setX)
         self.sbAutoCut.valueChanged.connect(self.setAutoCut)
         self.pbOptions.toggled.connect(self.toolbar.setVisible)
+        self.actionEvaluate.toggled.connect(self.lbEvaluation.setVisible)
 
     def _layout(self) -> None:
         """Organize the elements into a layout."""
@@ -118,6 +132,8 @@ class PlotGroupWidget(QtWidgets.QWidget):
             "autoCut": self.autoCut,
             "ly": self.lineY.value() if self.actionly.isChecked() else False,
             "lg": self.lineG.value() if self.actionlg.isChecked() else False,
+            "vls": (self.lineV1.value(), self.lineV2.value()) if self.actionvls.isChecked() else False,  # noqa
+            "evaluation": self.actionEvaluate.isChecked(),
         }
         return configuration
 
@@ -135,6 +151,12 @@ class PlotGroupWidget(QtWidgets.QWidget):
                 if value is not False:
                     self.toggleLineG(True, start=value)
                     self.actionlg.setChecked(True)
+            elif key == "vls":
+                if value is not False:
+                    self.toggleVerticalLines(True, *value)
+                    self.actionvls.setChecked(True)
+            elif key == "evaluation":
+                self.actionEvaluate.setChecked(value)
 
     @pyqtSlot()
     def update(self):
@@ -213,6 +235,18 @@ class PlotGroupWidget(QtWidgets.QWidget):
                 self.lineG = self.plotWidget.addLine(y=start, pen='g', movable=True)
 
     @pyqtSlot(bool)
+    def toggleVerticalLines(self, checked: bool, l1: float = 0, l2: float = 1) -> None:
+        try:
+            self.lineV1.setVisible(checked)
+            self.lineV2.setVisible(checked)
+        except AttributeError:
+            if checked:
+                self.lineV1 = self.plotWidget.addLine(x=l1, pen="y", movable=True)
+                self.lineV1.sigDragged.connect(self.evaluate_data)
+                self.lineV2 = self.plotWidget.addLine(x=l2, pen="y", movable=True)
+                self.lineV2.sigDragged.connect(self.evaluate_data)
+
+    @pyqtSlot(bool)
     def toggleV(self, checked: bool) -> None:
         """Make the font size large."""
         font = QtGui.QFont()
@@ -221,3 +255,25 @@ class PlotGroupWidget(QtWidgets.QWidget):
             self.lbValue.setFont(font)
         else:
             self.lbValue.setFont(font)
+
+    def evaluate_data(self, value: int = 0) -> None:
+        x_key, y_key = self.keys
+        if self.actionvls.isChecked():
+            l1 = self.lineV1.value()
+            l2 = self.lineV2.value()
+            l1, l2 = sorted((l1, l2))
+            if x_key == "index":
+                raw_data = self.main_window.lists[y_key][-self.autoCut:]
+                start = math.floor(l1)
+                stop = math.ceil(l2) + 1
+                data = raw_data[start:stop]
+            else:
+                # TODO only from visible data or all data (as is now)?
+                raw_data = np.array(self.main_window.lists[y_key])
+                raw_x = np.array(self.main_window.lists[x_key])
+                data = raw_data[(l1 <= raw_x) * (raw_x <= l2)]
+        else:
+            data = self.main_window.lists[y_key][-self.autoCut:]
+        mean = np.nanmean(a=data)
+        std = np.nanstd(a=data)
+        self.lbEvaluation.setText(f"{mean:g}\u00b1{std:g}")

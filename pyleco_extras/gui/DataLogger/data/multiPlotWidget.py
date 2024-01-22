@@ -54,7 +54,8 @@ class MultiPlotWidget(PlotGroupWidget):
 
     def _setup_ui(self):
         super()._setup_ui()
-        for action in (self.actionlg, self.actionly, self.actionv, self.action_show_lines):
+        for action in (self.actionlg, self.actionly, self.actionv, self.action_show_lines,
+                       self.actionvls, self.actionEvaluate,):
             self.toolbar.addAction(action)
         self.tvLines = QtWidgets.QTableView()
         self.tvLines.setToolTip('<html><head/><body><p>Select the color of the key to show. Either '
@@ -80,29 +81,28 @@ class MultiPlotWidget(PlotGroupWidget):
         self.pbAutoRange.clicked.connect(self.setAutoRange)
 
     def _layout(self):
+        display_box = QtWidgets.QHBoxLayout()
+        display_box.setSpacing(1)
+        display_box.setContentsMargins(0, 0, 0, 0)
+        for widget in (self.plotWidget, self.tvLines):
+            display_box.addWidget(widget)
+        display_box.setStretchFactor(self.plotWidget, 10)
+
+        button_box = QtWidgets.QHBoxLayout()
+        button_box.setSpacing(1)
+        button_box.setContentsMargins(0, 0, 0, 0)
+        for widget in (self.pbOptions, self.pbAutoRange, self.bbX, self.sbAutoCut, self.lbValue,
+                       self.lbEvaluation, self.pbLines,):
+            button_box.addWidget(widget)
+        button_box.setStretchFactor(self.bbX, 1)
+        button_box.setStretchFactor(self.lbValue, 3)
+
         vbox = QtWidgets.QVBoxLayout(self)
         vbox.setSpacing(1)
         vbox.setContentsMargins(0, 0, 0, 0)
-
-        hbox1 = QtWidgets.QHBoxLayout()
-        hbox1.setSpacing(1)
-        hbox1.setContentsMargins(0, 0, 0, 0)
-        for widget in (self.plotWidget, self.tvLines):
-            hbox1.addWidget(widget)
-        hbox1.setStretchFactor(self.plotWidget, 10)
-
-        hbox2 = QtWidgets.QHBoxLayout()
-        hbox2.setSpacing(1)
-        hbox2.setContentsMargins(0, 0, 0, 0)
-        for widget in (self.pbOptions, self.pbAutoRange, self.bbX, self.sbAutoCut, self.lbValue,
-                       self.pbLines,):
-            hbox2.addWidget(widget)
-        hbox2.setStretchFactor(self.bbX, 1)
-        hbox2.setStretchFactor(self.lbValue, 3)
-
         vbox.addWidget(self.toolbar)
-        vbox.addLayout(hbox1)
-        vbox.addLayout(hbox2)
+        vbox.addLayout(display_box)
+        vbox.addLayout(button_box)
         self.setLayout(vbox)
 
     def setup_plot(self):
@@ -199,6 +199,8 @@ class MultiPlotWidget(PlotGroupWidget):
             pass  # no data
         except ValueError:
             self.lbValue.setText(f"{y_key}: {self.main_window.lists[y_key][-1]}")
+        if self.actionEvaluate.isChecked():
+            self.evaluate_data()
 
     def clear_plot(self):
         """Clear plots."""

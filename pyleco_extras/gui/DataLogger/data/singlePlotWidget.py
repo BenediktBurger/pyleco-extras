@@ -49,7 +49,7 @@ class SinglePlotWidget(PlotGroupWidget):
     def _setup_ui(self):
         super()._setup_ui()
         for action in (self.actionDots, self.actionly, self.actionlg, self.actionmm,
-                       self.actionlmm, self.actionv):
+                       self.actionlmm, self.actionv, self.actionvls, self.actionEvaluate):
             self.toolbar.addAction(action)
         self.bbY = QtWidgets.QComboBox()
         self.bbY.setMaxVisibleItems(15)
@@ -66,7 +66,8 @@ class SinglePlotWidget(PlotGroupWidget):
         hbox = QtWidgets.QHBoxLayout()
         hbox.setSpacing(2)
         hbox.setContentsMargins(0, 0, 0, 0)
-        for widget in (self.pbOptions, self.bbY, self.bbX, self.sbAutoCut, self.lbValue):
+        for widget in (self.pbOptions, self.bbY, self.bbX, self.sbAutoCut, self.lbValue,
+                       self.lbEvaluation):
             hbox.addWidget(widget)
 
         vbox.addWidget(self.toolbar)
@@ -136,6 +137,8 @@ class SinglePlotWidget(PlotGroupWidget):
                 self.lbValue.setText(f"{y_key}: {self.main_window.lists[y_key][-1]}")
             except IndexError:
                 self.lbValue.setText("IndexError")
+        if self.actionEvaluate.isChecked():
+            self.evaluate_data()
 
     def clear_plot(self):
         """Clear the plot area to reduce memory."""
