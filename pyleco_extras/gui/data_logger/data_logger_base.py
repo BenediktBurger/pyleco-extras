@@ -16,8 +16,8 @@ from pyqtgraph.dockarea import DockArea, Dock
 from pyleco.management.data_logger import TriggerTypes, ValuingModes
 
 from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindowDesigner, start_app
-from pyleco_extras.gui.DataLogger.data.singlePlotWidget import SinglePlotWidget, PlotGroupWidget
-from pyleco_extras.gui.DataLogger.data.multiPlotWidget import MultiPlotWidget
+from pyleco_extras.gui.data_logger.data.single_plot_widget import SinglePlotWidget, PlotGroupWidget
+from pyleco_extras.gui.data_logger.data.multi_plot_widget import MultiPlotWidget
 
 log = logging.getLogger(__name__)
 log.addHandler(logging.StreamHandler())

@@ -18,9 +18,9 @@ from PyQt6.QtCore import pyqtSlot
 
 from pyleco.utils.parser import parse_command_line_parameters
 
-from pyleco_extras.gui.DataLogger.DataLoggerBase import DataLoggerBase
-from pyleco_extras.gui.DataLogger.data.settings import Settings
-from pyleco_extras.gui.DataLogger.data.load_file import load_datalogger_file
+from pyleco_extras.gui.data_logger.data_logger_base import DataLoggerBase
+from pyleco_extras.gui.data_logger.data.settings import Settings
+from pyleco_extras.gui.data_logger.data.load_file import load_datalogger_file
 
 
 log = logging.Logger(__name__)

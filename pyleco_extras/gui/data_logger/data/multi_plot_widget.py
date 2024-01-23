@@ -13,7 +13,7 @@ from qtpy.QtCore import Slot as pyqtSlot, Qt  # type: ignore
 import pyqtgraph as pg
 
 
-from .plotWidget import PlotGroupWidget, DataLoggerGuiProtocol
+from .plot_widget import PlotGroupWidget, DataLoggerGuiProtocol
 
 
 class MultiPlotWidget(PlotGroupWidget):

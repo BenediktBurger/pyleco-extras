@@ -23,9 +23,9 @@ from pyleco.utils.pipe_handler import CommunicatorPipe
 
 from pyleco_extras.gui_utils import base_main_window
 from pyleco_extras.gui_utils.base_main_window import start_app
-from pyleco_extras.gui.DataLogger.DataLoggerBase import DataLoggerBase
-from pyleco_extras.gui.DataLogger.data.settings import Settings
-from pyleco_extras.gui.DataLogger.data.data_logger_listener import DataLoggerListener
+from pyleco_extras.gui.data_logger.data_logger_base import DataLoggerBase
+from pyleco_extras.gui.data_logger.data.settings import Settings
+from pyleco_extras.gui.data_logger.data.data_logger_listener import DataLoggerListener
 
 
 nan = float("nan")

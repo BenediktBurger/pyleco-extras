@@ -12,7 +12,7 @@ import pyqtgraph as pg
 from qtpy import QtGui, QtWidgets
 from qtpy.QtCore import Slot as pyqtSlot, Qt  # type: ignore
 
-from .plotWidget import PlotGroupWidget, DataLoggerGuiProtocol
+from .plot_widget import PlotGroupWidget, DataLoggerGuiProtocol
 
 
 class SinglePlotWidget(PlotGroupWidget):

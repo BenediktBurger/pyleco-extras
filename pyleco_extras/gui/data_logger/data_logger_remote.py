@@ -19,8 +19,8 @@ from pyleco.management.data_logger import TriggerTypes
 from pyleco.directors.data_logger_director import DataLoggerDirector
 
 from pyleco_extras.gui_utils.base_main_window import start_app
-from pyleco_extras.gui.DataLogger.DataLoggerBase import DataLoggerBase
-from pyleco_extras.gui.DataLogger.data.settings_remote import Settings
+from pyleco_extras.gui.data_logger.data_logger_base import DataLoggerBase
+from pyleco_extras.gui.data_logger.data.settings_remote import Settings
 
 
 log = logging.Logger(__name__)
