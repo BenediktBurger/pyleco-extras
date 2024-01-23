@@ -159,12 +159,14 @@ class StarterGUI(LECOBaseMainWindowDesigner):
             starter.setData(name, Qt.ItemDataRole.EditRole)
             self.request_task_list(starter)
 
-    def add_starter(self):
+    @pyqtSlot()
+    def add_starter(self) -> StarterItem:
         """Add an unnamed starter."""
         starter = StarterItem("Unnamed Starter")
         self.model_root.appendRow(starter)
         return starter
 
+    @pyqtSlot()
     def remove_starter(self):
         """Remove the selected starter(s)."""
         indices = self.sm.selectedIndexes()
