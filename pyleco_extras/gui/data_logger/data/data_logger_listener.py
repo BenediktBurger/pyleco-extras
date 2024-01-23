@@ -33,6 +33,7 @@ class DataLoggerCore(PipeHandler, DataLogger):
         self._previous_trigger: Optional[TriggerTypes] = None
 
     def calculate_data(self) -> dict[str, Any]:
+        # might enter the datalogger itself.
         d = super().calculate_data()
         if 'time_h' in d:
             if "time" in d:
