@@ -16,9 +16,7 @@ import pint
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtCore import pyqtSlot
 
-from pyleco.utils.parser import parse_command_line_parameters
-
-from pyleco_extras.gui.data_logger.data_logger_base import DataLoggerBase
+from pyleco_extras.gui.data_logger.data_logger_base import DataLoggerBase, start_app
 from pyleco_extras.gui.data_logger.data.settings import Settings
 from pyleco_extras.gui.data_logger.data.load_file import load_datalogger_file
 
@@ -118,11 +116,4 @@ class DataLoggerViewer(DataLoggerBase):
 
 
 if __name__ == '__main__':
-    doc = DataLoggerViewer.__doc__
-    kwargs = parse_command_line_parameters(
-        logger=log,
-        parser_description=doc.split(":param", maxsplit=1)[0] if doc else None,
-    )
-    app = QtWidgets.QApplication([])
-    window = DataLoggerViewer(**kwargs)
-    app.exec()
+    start_app(DataLoggerViewer)
