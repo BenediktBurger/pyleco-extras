@@ -21,7 +21,7 @@ from pyleco.core import LOG_SENDING_PORT
 from pyleco.core.data_message import DataMessage, MessageTypes
 
 from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindowDesigner, start_app
-from pyleco_extras.gui.LogLogger.data.settings import Settings
+from pyleco_extras.gui.log_logger.data.settings import Settings
 
 
 log = logging.getLogger(__name__)

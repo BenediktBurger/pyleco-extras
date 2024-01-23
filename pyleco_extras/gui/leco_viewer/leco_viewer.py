@@ -1,12 +1,9 @@
-import logging
-
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from pyleco.directors.coordinator_director import CoordinatorDirector
-from pyleco.utils.parser import parse_command_line_parameters
 
-from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindowNoDesigner
-from pyleco_extras.gui.LECOViewer.settings import Settings
+from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindowNoDesigner, start_app
+from pyleco_extras.gui.leco_viewer.settings import Settings
 
 
 class LECOViewer(LECOBaseMainWindowNoDesigner):
@@ -73,13 +70,5 @@ class LECOViewer(LECOBaseMainWindowNoDesigner):
             self.tv.setExpanded(i, True)
 
 
-def main():
-    logging.getLogger().addHandler(logging.StreamHandler())
-    kwargs = parse_command_line_parameters()
-    app = QtWidgets.QApplication([])
-    window = LECOViewer(**kwargs)  # noqa
-    app.exec()
-
-
 if __name__ == "__main__":
-    main()  # pragma: nocover
+    start_app(LECOViewer)
