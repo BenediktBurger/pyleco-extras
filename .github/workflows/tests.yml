@@ -76,7 +76,7 @@ jobs:
       - name: Install pyleco extras
         run: pip install -e .[dev]  # editable for covtest
       - name: Test for Coverage
-        run: pytest --cov=pyleco_extras --cov-report=xml
+        run: pytest --cov=pyleco_extras --cov-report=xml --ignore=requirements
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -153,14 +153,14 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           echo "::add-matcher::.github/pytest.json"
-          xvfb-run -a pytest
+          xvfb-run -a pytest --ignore=requirements
       - name: Run pytest under Windows
         if: runner.os == 'Windows'
         run: |
           echo "::add-matcher::.github/pytest.json"
-          pytest
+          pytest --ignore=requirements
       - name: Run pytest under Mac without acceptance tests
         if: runner.os == 'macOS'
         run: |
           echo "::add-matcher::.github/pytest.json"
-          pytest --ignore=tests/acceptance_tests
+          pytest --ignore=tests/acceptance_tests --ignore=requirements
