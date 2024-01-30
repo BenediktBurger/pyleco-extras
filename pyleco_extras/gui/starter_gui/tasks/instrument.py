@@ -68,7 +68,8 @@ def readout(device, publisher):
 def task(stop_event):
     """The task which is run by the starter."""
     # Initialize
-    c = controller.InstrumentController("instrument", FantasyInstrument, periodic_reading=interval, auto_connect={'adapter': True})
+    c = controller.InstrumentController("instrument", FantasyInstrument, periodic_reading=interval,
+                                        auto_connect={'adapter': True})
     c._readout = readout
     c.start_timer()
 
