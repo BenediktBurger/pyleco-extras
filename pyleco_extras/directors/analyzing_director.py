@@ -1,6 +1,6 @@
 
 from inspect import getmembers
-from typing import Optional, TypeVar, Generic
+from typing import Generic, Optional, TypeVar, Union
 
 from pymeasure.instruments import Channel
 
@@ -83,7 +83,7 @@ class AnalyzingDirector(Director, Generic[Device]):
 
     def __init__(self,
                  device_class: type[Device],
-                 actor: Optional[bytes | str] = None,
+                 actor: Optional[Union[bytes, str]] = None,
                  communicator: Optional[CommunicatorProtocol] = None,
                  name: str = "Director",
                  **kwargs):
