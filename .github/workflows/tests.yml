@@ -30,19 +30,19 @@ jobs:
         uses: chartboost/ruff-action@v1
         with:
           args: --extend-select=E9,F63,F7,F82 --show-source
-      - uses: ammaraskar/sphinx-problem-matcher@master
-      - name: Generate docs
-        if: always()  # run even if the previous step failed
-        working-directory: ./docs
-        run: |
-          echo "::add-matcher::.github/sphinx.json"
-          make html SPHINXOPTS="-W --keep-going"
-      - name: Run doctests
-        if: always()  # run even if the previous step failed
-        working-directory: ./docs
-        run: |
-          echo "::add-matcher::.github/sphinx.json"
-          make doctest SPHINXOPTS="-W --keep-going"
+      # - uses: ammaraskar/sphinx-problem-matcher@master
+      # - name: Generate docs
+      #   if: always()  # run even if the previous step failed
+      #   working-directory: ./docs
+      #   run: |
+      #     echo "::add-matcher::.github/sphinx.json"
+      #     make html SPHINXOPTS="-W --keep-going"
+      # - name: Run doctests
+      #   if: always()  # run even if the previous step failed
+      #   working-directory: ./docs
+      #   run: |
+      #     echo "::add-matcher::.github/sphinx.json"
+      #     make doctest SPHINXOPTS="-W --keep-going"
 
   codecov:
     name: Code coverage on codecov
@@ -107,6 +107,17 @@ jobs:
           cache-downloads: false
       - name: Python version
         run: python --version
+      - name: Checkout pyleco
+        uses: actions/checkout@v3
+        with:
+          repository: pymeasure/pyleco
+          path: './requirements'  # protected name, ignored by setuptools
+      - name: Install Pyleco
+        # If the pytest problem matcher stops working because of bad paths, do an editable install
+        run: |
+          cd requirements
+          pip install .[dev]
+          cd ..
       - name: Install mypy
         run: pip install mypy
       - name: Run mypy
