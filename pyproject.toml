@@ -68,4 +68,5 @@ exclude = [
 [tool.coverage.run]
 branch = true
 omit = [
+  "requirements",
 ]
