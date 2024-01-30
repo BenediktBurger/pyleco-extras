@@ -5,6 +5,8 @@ Additional content for [PyLECO](https://github.com/pymeasure/pyleco) the python 
 This module offers additional actors, directors, etc.
 It also offers some GUI utils for easier control of the PyLECO Components.
 
+[![codecov](https://codecov.io/gh/BenediktBurger/pyleco-extras/graph/badge.svg?token=BHDA9OKK7C)](https://codecov.io/gh/BenediktBurger/pyleco-extras)
+
 ## GUI Tools
 
 They are in the [gui](pyleco_extras/gui/) folder.
