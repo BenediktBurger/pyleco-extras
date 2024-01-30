@@ -28,9 +28,9 @@ from typing import Any, Callable, Optional
 
 import zmq
 
-from ..core import PROXY_SENDING_PORT
-from .extended_message_handler import ExtendedMessageHandler
-from .data_publisher import DataPublisher
+from pyleco.core import PROXY_SENDING_PORT
+from pyleco.utils.extended_message_handler import ExtendedMessageHandler
+from pyleco.utils.data_publisher import DataPublisher
 
 
 log = logging.getLogger(__name__)

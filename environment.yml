@@ -3,6 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - pyzmq=25.1.2
+  - pymeasure=0.13.1
   - pip  # don't pin, to gain newest conda compatibility fixes
   - pip:
     - jsonrpc2-pyclient==4.3.0

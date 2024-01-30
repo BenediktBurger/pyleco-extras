@@ -32,7 +32,7 @@ try:
 except ModuleNotFoundError:
     pytest.skip("Numpy or pint is not installed", allow_module_level=True)
 else:
-    from pyleco.utils.extended_publisher import ExtendedPublisher, PowerEncoder
+    from pyleco_extras.utils.extended_publisher import ExtendedPublisher, PowerEncoder
 
 
 ureg = pint.UnitRegistry()
