@@ -66,11 +66,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: pymeasure/pyleco
-          path: './pyleco'
+          path: './requirements'  # protected name, ignored by setuptools
       - name: Install Pyleco
         # If the pytest problem matcher stops working because of bad paths, do an editable install
         run: |
-          cd pyleco
+          cd requirements
           pip install .[dev]
           cd ..
       - name: Install pyleco extras
@@ -140,11 +140,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: pymeasure/pyleco
-          path: './pyleco'
+          path: './requirements'  # protected name, ignored by setuptools
       - name: Install Pyleco
         # If the pytest problem matcher stops working because of bad paths, do an editable install
         run: |
-          cd pyleco
+          cd requirements
           pip install .[dev]
           cd ..
       - name: Install pyleco extras
