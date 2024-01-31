@@ -28,7 +28,7 @@ from typing import Any
 import numpy as np  # type: ignore[import-not-found]
 import pint  # type: ignore[import-not-found]
 
-from pyleco.utils.publisher import Publisher
+from pyleco.utils.data_publisher import DataPublisher
 
 
 class PowerEncoder(json.JSONEncoder):
@@ -46,15 +46,15 @@ class PowerEncoder(json.JSONEncoder):
         return super().default(o)
 
 
-class ExtendedPublisher(Publisher):
+class ExtendedPublisher(DataPublisher):
     """
     Publishing key-value data via zmq.
     """
 
-    def send(self, data: dict[str, Any]) -> None:
+    def send_data2(self, data: dict[str, Any]) -> None:
         """Send the dictionary `data`."""
+        # TODO name
         if self.full_name == "":
             raise ValueError("You have to specify the sender name, before sending!")
         else:
-            self.socket.send_multipart((self.full_name.encode(),
-                                        json.dumps(data, cls=PowerEncoder)))
+            self.send_data(data=json.dumps(data, cls=PowerEncoder))
