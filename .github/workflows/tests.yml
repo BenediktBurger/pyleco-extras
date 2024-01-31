@@ -74,7 +74,7 @@ jobs:
           pip install .[dev]
           cd ..
       - name: Install pyleco extras
-        run: pip install -e .[dev]  # editable for covtest
+        run: pip install -e .[gui,dev]  # editable for covtest
       - name: Test for Coverage
         run: pytest --cov=pyleco_extras --cov-report=xml --ignore=requirements
       - name: Upload coverage to Codecov
@@ -159,7 +159,7 @@ jobs:
           pip install .[dev]
           cd ..
       - name: Install pyleco extras
-        run: pip install -e .[dev]  # editable for covtest
+        run: pip install -e .[gui,dev]  # editable for covtest
       - name: Run pytest under Linux with xvfb
         if: runner.os == 'Linux'
         run: |
