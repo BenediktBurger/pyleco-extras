@@ -9,7 +9,15 @@ It also offers some GUI utils for easier control of the PyLECO Components.
 
 ## GUI Tools
 
+Some GUIs related to PyLECO.
 They are in the [gui](pyleco_extras/gui/) folder.
+
+
+### BaseMainWindow
+
+In the [gui_utils](pyleco_extras/gui_utils/), the `BaseMainWindow` and `BaseSettings` classes offer default classes for a GUI main window and a corresponding settings dialog window.
+The BaseMainWindow has a `Listener` and a `DataPublisher` (from PyLECO) already up and running.
+The BaseSettings allows easy customization of a settings dialog class.
 
 ### DataLogger
 
@@ -32,3 +40,45 @@ You can start/stop/restart tasks of these starters.
 ### LogLogger
 
 The `LogLogger` logs the log entries published by other Components and shows the logs graphically.
+
+
+## Actors / Directors
+
+Actors and Directors.
+They are, analogous to PyLECO in corresponding [actors](pyleco_extras/actors/) and [directors](pyleco_extras/directors/) folders.
+
+### Analyzing director
+
+This director can analyze an instrument (especially `pymeasure.Instrument`) and create a device, which seems to be such an instrument.
+It reproduces all methods, properties, and channels (with methods, properties, and subchannels recursively).
+That removes the need to create a director for a specific instrument, but offers all the tools as if the instrument were local.
+
+### Trinamic Motor Cards
+
+The `actors.motor_controller` offers an Actor for Trinamic motor cards.
+The `directors.motor_director` offers the corresponding Director, which can be used as an in-place replacement for trinamic motor cards objects of the [pytrinamic](https://github.com/trinamic/PyTrinamic) project.
+
+
+## Tools
+
+Other tools in the [tools](pyleco_extras/tools/) folder.
+
+### Topic Collector
+
+The TopicTollector listens to published data (data protocol) for some time and collects all the topics in order to show, what is available.
+
+
+## Utils
+
+More utils in [utils](pyleco_extras/utils/) folder, analogous to PyLECO.
+
+### Extended Publisher
+
+The extended Publisher is one, which can send `pint.Quantity` and numpy objects.
+The default JSON encoder does not handle these objects.
+
+
+### Republisher
+
+The Republisher listens to messages of the data protocol and publishes new values based on these.
+For example, it can use a calibration to convert a measurement data to a calibrated value.
