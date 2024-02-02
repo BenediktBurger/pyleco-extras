@@ -13,7 +13,7 @@ jobs:
       run:
         shell: bash -l {0}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Install general requirements
@@ -51,7 +51,7 @@ jobs:
       run:
         shell: bash -l {0}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Install requirements
@@ -62,17 +62,6 @@ jobs:
           cache-downloads: false
       - name: Python version
         run: python --version
-      - name: Checkout pyleco
-        uses: actions/checkout@v3
-        with:
-          repository: pymeasure/pyleco
-          path: './requirements'  # protected name, ignored by setuptools
-      - name: Install Pyleco
-        # If the pytest problem matcher stops working because of bad paths, do an editable install
-        run: |
-          cd requirements
-          pip install .[dev]
-          cd ..
       - name: Install pyleco extras
         run: pip install -e .[gui,dev]  # editable for covtest
       - name: Test for Coverage
@@ -96,7 +85,7 @@ jobs:
       run:
         shell: bash -l {0}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Install requirements
@@ -107,21 +96,10 @@ jobs:
           cache-downloads: false
       - name: Python version
         run: python --version
-      - name: Checkout pyleco
-        uses: actions/checkout@v3
-        with:
-          repository: pymeasure/pyleco
-          path: './requirements'  # protected name, ignored by setuptools
-      - name: Install Pyleco
-        # If the pytest problem matcher stops working because of bad paths, do an editable install
-        run: |
-          cd requirements
-          pip install .[dev]
-          cd ..
       - name: Install mypy
         run: pip install mypy
       - name: Run mypy
-        run: mypy . --exclude requirements
+        run: mypy .
 
   test:
     name: Python ${{ matrix.python-version }}, ${{ matrix.os }}
@@ -135,7 +113,7 @@ jobs:
         os: ["ubuntu-latest", "macos-latest", "windows-latest"]
         python-version: ["3.9", "3.10", "3.11", "3.12"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Install requirements
@@ -147,17 +125,6 @@ jobs:
           cache-downloads: false
       - name: Python version
         run: python --version
-      - name: Checkout pyleco
-        uses: actions/checkout@v3
-        with:
-          repository: pymeasure/pyleco
-          path: './requirements'  # protected name, ignored by setuptools
-      - name: Install Pyleco
-        # If the pytest problem matcher stops working because of bad paths, do an editable install
-        run: |
-          cd requirements
-          pip install .[dev]
-          cd ..
       - name: Install pyleco extras
         run: pip install -e .[gui,dev]  # editable for covtest
       - name: Run pytest under Linux with xvfb

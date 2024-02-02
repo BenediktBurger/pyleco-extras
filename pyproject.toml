@@ -22,6 +22,7 @@ requires-python = ">=3.9"
 dependencies = [
   "pyleco",
   "pint",
+  "numpy",
 ]
 
 [project.optional-dependencies]

@@ -6,6 +6,17 @@ This module offers additional actors, directors, etc.
 It also offers some GUI utils for easier control of the PyLECO Components.
 
 [![codecov](https://codecov.io/gh/BenediktBurger/pyleco-extras/graph/badge.svg?token=BHDA9OKK7C)](https://codecov.io/gh/BenediktBurger/pyleco-extras)
+[![Common Changelog](https://common-changelog.org/badge.svg)](https://common-changelog.org)
+
+
+## Installation
+
+1. Clone this repository,
+2. change your working directory to this file,
+3. Install with pip editable: `pip install -e .`
+
+For updates just pull the main branch.
+
 
 ## GUI Tools
 
