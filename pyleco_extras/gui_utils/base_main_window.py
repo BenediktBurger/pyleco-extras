@@ -1,6 +1,7 @@
 
 import logging
-from typing import Optional
+from pathlib import Path
+from typing import Optional, Union
 
 from qtpy import QtCore, QtGui, QtWidgets, uic
 from qtpy.QtCore import Slot  # type: ignore
@@ -117,18 +118,27 @@ class _LECOBaseMainWindow(QtWidgets.QMainWindow):
 
 
 class LECOBaseMainWindowDesigner(_LECOBaseMainWindow):
-    """Base MainWindow subclass with a LECO listener, UI defined via designer ui file."""
+    """Base MainWindow subclass with a LECO listener, UI defined via designer ui file.
+
+    :param name: Leco name
+    :param ui_file_name: Name of the ui_file (without ".ui" termination)
+    :param ui_file_path: Path to the ui file. Relative "data" or absolute, e.g.
+        `pathlib.Path(__file__).parent / "data"`.
+    """
 
     def __init__(self,
                  name: str,
                  ui_file_name: str,
+                 ui_file_path: Union[Path, str] = "data",
                  settings_dialog_class: type[QtWidgets.QDialog] | None = None,
                  host: str = "localhost",
                  port: int = COORDINATOR_PORT,
                  logger: logging.Logger = log,
                  data_port: int = PROXY_SENDING_PORT,
                  **kwargs) -> None:
-        self._ui_file_name = ui_file_name
+        if isinstance(ui_file_path, str):
+            ui_file_path = Path(ui_file_path)
+        self._file_path = ui_file_path / f"{ui_file_name}.ui"
         super().__init__(name=name,
                          settings_dialog_class=settings_dialog_class,
                          host=host,
@@ -138,7 +148,7 @@ class LECOBaseMainWindowDesigner(_LECOBaseMainWindow):
                          **kwargs)
 
     def _setup_ui(self):
-        uic.load_ui.loadUi(f"data/{self._ui_file_name}.ui", self)
+        uic.load_ui.loadUi(self._file_path, self)
 
 
 class LECOBaseMainWindowNoDesigner(_LECOBaseMainWindow):

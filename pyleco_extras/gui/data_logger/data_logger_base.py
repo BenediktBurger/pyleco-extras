@@ -5,6 +5,7 @@ Base File for the DataLogger family.
 
 # Standard packages.
 import logging
+from pathlib import Path
 import time
 from typing import Any, Iterable, Optional
 
@@ -57,7 +58,9 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
 
     def __init__(self, name: str, **kwargs) -> None:
         # Use initialization of parent class QMainWindow.
-        super().__init__(name=name, ui_file_name="DataLogger", **kwargs)
+        super().__init__(name=name, ui_file_name="DataLogger",
+                         ui_file_path=Path(__file__).parent / "data",
+                         **kwargs)
 
         # Load the user interface file, and configure the dock area and show it.
         self.dockArea = DockArea()

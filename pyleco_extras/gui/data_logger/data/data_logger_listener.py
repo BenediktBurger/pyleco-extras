@@ -12,10 +12,14 @@ from pyleco.management.data_logger import DataLogger, TriggerTypes, ValuingModes
 from pyleco.utils.pipe_handler import PipeHandler
 from pyleco.utils.events import Event
 from pyleco.utils.listener import Listener
-from pyleco.utils.qt_listener import QtListener
+try:
+    from pyleco.utils.qt_listener import ListenerSignals
+except ImportError:
+    from pyleco.utils.qt_listener import QtListener
+    ListenerSignals = QtListener.ListenerSignals  # type: ignore
 
 
-class Signals(QtListener.ListenerSignals):
+class Signals(ListenerSignals):
     """Signals for the DataLogger message handler."""
     started = Signal()
     configuration_changed = Signal(dict)

@@ -1,5 +1,5 @@
 """
-Remotely control a DataLogger
+View data files of a DataLogger
 
 Created on Thu Apr  1 15:14:39 2021 by Benedikt Burger
 """
