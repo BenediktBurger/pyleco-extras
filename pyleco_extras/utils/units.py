@@ -9,12 +9,14 @@ https://pint.readthedocs.io/en/stable/index.html
 Created on Wed Feb 15 17:51:49 2023 by Benedikt Burger
 """
 
+from typing import Union
+
 import pint
 
 ureg = pint.UnitRegistry()
 
 
-def assume_units(value: pint.Quantity | str, units: pint.Unit | str) -> pint.Quantity:
+def assume_units(value: Union[pint.Quantity, str], units: Union[pint.Unit, str]) -> pint.Quantity:
     """Return a unitful quantity, assuming, if necessary the `units`.
 
     :param value: A value that may or may not be unitful.
