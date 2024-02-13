@@ -11,6 +11,7 @@ dependencies:
     - uuid7==0.1.0
     - pyleco==0.2.0
     - PyTrinamic>=0.2
+    - PyQt6
 # Development dependencies below
   - pytest=7.2.0
   - pytest-cov=4.1.0

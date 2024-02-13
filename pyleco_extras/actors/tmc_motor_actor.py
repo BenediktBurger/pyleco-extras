@@ -7,7 +7,7 @@ from pytrinamic.connections import ConnectionManager  # type: ignore
 from pytrinamic.modules import TMCM6110  # type: ignore
 
 from pyleco.utils.message_handler import MessageHandler
-from devices import motors
+from .tmc import motors
 
 
 class TMCMotorActor(MessageHandler):

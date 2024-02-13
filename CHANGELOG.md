@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [unreleased]
+
+### Changed
+
+- **Breaking:** rename `MotorController` to `TMCMotorActor` and `MotorDirector` to `TMCMotorDirector`
+
+
 ## [0.1.0] 2024-02-02
 
 _Initial release_
