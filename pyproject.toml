@@ -39,6 +39,11 @@ dev = [
   'sphinx',
   'sphinx_rtd_theme',
 ]
+tests = [
+  'PyQt6',
+  'pymeasure>=0.13',
+  "PyTrinamic>=0.2",
+]
 
 [project.urls]
 "Homepage" = "https://github.com/BenediktBurger/pyleco-extras"

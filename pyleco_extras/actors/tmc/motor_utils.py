@@ -51,7 +51,7 @@ stallguardThreshold
 Created on 14.01.2022 by Benedikt Moneke
 """
 
-from typing import Any
+from typing import Any, Dict, Union
 
 import pint
 from qtpy import QtCore, QtWidgets
@@ -61,8 +61,11 @@ from pyleco_extras.gui_utils.base_settings import BaseSettings
 from pyleco_extras.utils.units import ureg, assume_units
 
 
+CONFIG_DICT = Dict[str, Any]
+
+
 # Configuration dictionary for the normal motors.
-default_config = {
+default_config: CONFIG_DICT = {
     'motorNumber': 0,
     'maxCurrent': 50,
     'standbyCurrent': 5,
@@ -222,7 +225,7 @@ class MotorSettings(BaseSettings):
         self.sbUnitOffset.setSuffix(symbol)
 
 
-def configureMotor(card, config: dict[str, Any]) -> None:
+def configureMotor(card, config: CONFIG_DICT) -> None:
     """Configure a motor of `card` according to the dictionary `config`."""
     motor = card.motors[config['motorNumber']]
     motor.drive_settings.max_current = round(2.55 * config['maxCurrent'])
@@ -245,7 +248,7 @@ def getPort(name: str) -> int:
         raise ValueError(f"No port found for {name}.")
 
 
-def stepsToUnits(microsteps: int, config: dict) -> float:
+def stepsToUnits(microsteps: int, config: CONFIG_DICT) -> float:
     """Convert `microsteps` to a unit according to the motor `config`."""
     stepResolution = 2 ** config['stepResolution']  # microsteps per fullstep
     fStepsPerRev = config['stepCount']  # fullstep per revolution
@@ -254,13 +257,13 @@ def stepsToUnits(microsteps: int, config: dict) -> float:
     return (microsteps / stepResolution / fStepsPerRev * unitSize) + offset
 
 
-def stepsToUnitsQ(microsteps: int, config: dict) -> pint.Quantity:
+def stepsToUnitsQ(microsteps: int, config: CONFIG_DICT) -> pint.Quantity:
     """Return a quantity from the `microsteps`."""
     return ureg.Quantity(stepsToUnits(microsteps, config),
                          config.get("unitSymbol", ""))  # type: ignore
 
 
-def unitsToSteps(units: float | str | pint.Quantity, config: dict) -> int:
+def unitsToSteps(units: Union[float, str, pint.Quantity], config: CONFIG_DICT) -> int:
     """Convert `units` to microsteps according to motor `config`."""
     if isinstance(units, str):
         units = assume_units(units, config.get("unitSymbol", ""))
