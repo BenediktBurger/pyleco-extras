@@ -12,6 +12,7 @@ dependencies:
     - pyleco==0.2.0
     - PyTrinamic>=0.2
     - PyQt6
+    - qtpy
 # Development dependencies below
   - pytest=7.2.0
   - pytest-cov=4.1.0

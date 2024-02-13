@@ -11,7 +11,7 @@ import pytest
 
 import pint
 
-from pyleco_extras.actors.tmc import motors
+from pyleco_extras.actors.tmc import motor_utils
 
 
 @pytest.fixture()
@@ -33,11 +33,11 @@ class Test_stepsToUnits:
 
     @pytest.mark.parametrize("steps, units", values)
     def test_config(self, config, steps, units):
-        assert motors.stepsToUnits(steps, config) == units
+        assert motor_utils.stepsToUnits(steps, config) == units
 
     def test_offset(self, config):
         config['unitOffset'] = 5
-        assert motors.stepsToUnits(0, config) == 5
+        assert motor_utils.stepsToUnits(0, config) == 5
 
 
 class Test_unitsToSteps:
@@ -52,15 +52,15 @@ class Test_unitsToSteps:
 
     @pytest.mark.parametrize("steps, units", values)
     def test_config(self, config, steps, units):
-        assert motors.unitsToSteps(units, config) == steps
+        assert motor_utils.unitsToSteps(units, config) == steps
 
     def test_offset(self, config):
         config['unitOffset'] = 5
-        assert motors.unitsToSteps(5, config) == 0
+        assert motor_utils.unitsToSteps(5, config) == 0
 
     def test_wrong_units(self, config):
         with pytest.raises(pint.DimensionalityError):
-            motors.unitsToSteps("5 kg", config)
+            motor_utils.unitsToSteps("5 kg", config)
 
 
 class Test_toSignedInt:
@@ -78,7 +78,7 @@ class Test_toSignedInt:
 
     @pytest.mark.parametrize("unsigned, signed", values)
     def test_conversion(self, unsigned, signed):
-        assert motors.toSignedInt(unsigned, 8) == signed
+        assert motor_utils.toSignedInt(unsigned, 8) == signed
 
     def test_32bit(self):
-        assert motors.toSignedInt(-12345+2**32) == -12345
+        assert motor_utils.toSignedInt(-12345+2**32) == -12345

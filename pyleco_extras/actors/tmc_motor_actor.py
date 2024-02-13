@@ -7,7 +7,7 @@ from pytrinamic.connections import ConnectionManager  # type: ignore
 from pytrinamic.modules import TMCM6110  # type: ignore
 
 from pyleco.utils.message_handler import MessageHandler
-from .tmc import motors
+from .tmc import motor_utils
 
 
 class TMCMotorActor(MessageHandler):
@@ -28,7 +28,7 @@ class TMCMotorActor(MessageHandler):
                  **kwargs) -> None:
         super().__init__(name, **kwargs)
         if isinstance(port, str):
-            port = motors.getPort(port)
+            port = motor_utils.getPort(port)
         self.connectionManager = ConnectionManager(f"--port COM{port}")
         self.device = TMCM6110(self.connectionManager.connect())
         self.configs: dict[Union[int, str], dict[str, Any]] = {}
@@ -85,7 +85,7 @@ class TMCMotorActor(MessageHandler):
     def configure_motor(self, config: dict[str, Any]) -> None:
         """Configure a motor according to the dictionary."""
         try:
-            motors.configureMotor(self.device, config)
+            motor_utils.configureMotor(self.device, config)
         except KeyError:
             pass
         try:
@@ -125,7 +125,7 @@ class TMCMotorActor(MessageHandler):
     def get_actual_units(self, motor: Union[int, str]) -> float:
         """Get the actual position in units."""
         motor = self._get_motor_number(motor)
-        return motors.stepsToUnits(self.get_actual_position(motor), self.configs[motor])
+        return motor_utils.stepsToUnits(self.get_actual_position(motor), self.configs[motor])
 
     def set_actual_position(self, motor: Union[int, str], steps: int) -> None:
         """Set the current position in steps."""
@@ -149,7 +149,7 @@ class TMCMotorActor(MessageHandler):
         """Move to a specific position in units."""
         motor = self._get_motor_number(motor)
         try:
-            position = motors.unitsToSteps(position, self.configs[motor])
+            position = motor_utils.unitsToSteps(position, self.configs[motor])
         except KeyError:
             self.log.exception(f"Insufficient configuration for motor {motor} to move to.")
             raise ValueError(f"Insufficient configuration for motor {motor} to move to.")
@@ -160,7 +160,7 @@ class TMCMotorActor(MessageHandler):
                       velocity: int | None = None) -> None:
         motor = self._get_motor_number(motor)
         try:
-            difference = motors.unitsToSteps(difference, self.configs[motor])
+            difference = motor_utils.unitsToSteps(difference, self.configs[motor])
         except KeyError:
             self.log.exception(f"Insufficient configuration for motor {motor} to move by.")
             raise ValueError(f"Insufficient configuration for motor {motor} to move by.")
