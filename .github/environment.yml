@@ -1,4 +1,4 @@
-name: pyleco
+name: pyleco-extras
 channels:
   - conda-forge
 dependencies:
