@@ -12,11 +12,7 @@ from pyleco.management.data_logger import DataLogger, TriggerTypes, ValuingModes
 from pyleco.utils.pipe_handler import PipeHandler
 from pyleco.utils.events import Event
 from pyleco.utils.listener import Listener
-try:
-    from pyleco.utils.qt_listener import ListenerSignals
-except ImportError:
-    from pyleco.utils.qt_listener import QtListener
-    ListenerSignals = QtListener.ListenerSignals  # type: ignore
+from pyleco.utils.qt_listener import ListenerSignals
 
 
 class Signals(ListenerSignals):
