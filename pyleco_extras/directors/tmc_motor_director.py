@@ -41,7 +41,7 @@ class TMCMotorDirector(Director):
     :param int motor_count: Number of motor connections.
     """
 
-    def __init__(self, actor: bytes | str, motor_count: int = 6, communicator=None,
+    def __init__(self, actor: Union[bytes, str], motor_count: int = 6, communicator=None,
                  **kwargs) -> None:
         self.motors = [self.Motor(parent=self, number=i) for i in range(motor_count)]
         super().__init__(actor=actor, communicator=communicator, **kwargs)
