@@ -23,7 +23,7 @@
 #
 
 import logging
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from pytrinamic.modules import TMCM6110  # type: ignore
 
@@ -91,57 +91,58 @@ class MotorDirector(Director):
     # General methods
     def disconnect(self) -> None:
         """Disconnect the card."""
-        self.call_action("disconnect")
+        return self.call_action("disconnect")
 
-    def configure_motor(self, config: dict):
+    def configure_motor(self, config: dict[str, Any]) -> None:
         """Configure a motor according to the dictionary."""
         return self.call_action("configure_motor", config)
 
-    def get_configuration(self, motor: int | str):
+    def get_configuration(self, motor: Union[int, str]) -> dict[str, Any]:
         """Get the configuration of `motor`."""
         return self.call_action("get_configuration", motor)
 
-    def get_global_parameter(self, gp_type: int, bank: int, signed: bool = False):
+    def get_global_parameter(self, gp_type: int, bank: int, signed: bool = False) -> Any:
         return self.call_action("get_global_parameter", gp_type, bank, signed)
 
     def set_global_parameter(self, gp_type: int, bank: int, value) -> None:
         return self.call_action("set_global_parameter", gp_type, bank, value)
 
-    def get_axis_parameter(self, ap_type: int, axis: int, signed: bool = False):
+    def get_axis_parameter(self, ap_type: int, axis: int, signed: bool = False) -> Any:
         return self.call_action("get_axis_parameter", ap_type, axis, signed)
 
     def set_axis_parameter(self, ap_type: int, axis: int, value) -> None:
         return self.call_action("set_axis_parameter", ap_type, axis, value)
 
     # Motor controls
-    def stop(self, motor: int | str) -> None:
+    def stop(self, motor: Union[int, str]) -> None:
         """Stop a motor."""
         return self.call_action("stop", motor)
 
-    def get_actual_velocity(self, motor: int | str) -> int:
+    def get_actual_velocity(self, motor: Union[int, str]) -> int:
         """Get the current velocity of the motor."""
         return self.call_action("get_actual_velocity", motor)
 
-    def get_actual_position(self, motor: int | str) -> int:
+    def get_actual_position(self, motor: Union[int, str]) -> int:
         """Get the current position of the motor."""
         return self.call_action("get_actual_position", motor)
 
-    def get_actual_units(self, motor: int | str) -> float:
+    def get_actual_units(self, motor: Union[int, str]) -> float:
         """Get the actual position in units."""
         return self.call_action("get_actual_units", motor)
 
-    def set_actual_position(self, motor: int | str, steps) -> float:
+    def set_actual_position(self, motor: Union[int, str], steps: int) -> None:
         """Set the current position in steps."""
         return self.call_action("set_actual_position", motor, steps)
 
-    def move_to(self, motor: int | str, position: int, velocity: Optional[int] = None) -> None:
+    def move_to(self, motor: Union[int, str], position: int, velocity: Optional[int] = None
+                ) -> None:
         """Move to a specific position."""
         if velocity is None:
             return self.call_action("move_to", motor, position)
         else:
             return self.call_action("move_to", motor, position, velocity)
 
-    def move_to_units(self, motor: int | str, position: float, velocity: Optional[int] = None
+    def move_to_units(self, motor: Union[int, str], position: float, velocity: Optional[int] = None
                       ) -> None:
         """Move to a specific position in units."""
         if velocity is None:
@@ -149,14 +150,16 @@ class MotorDirector(Director):
         else:
             return self.call_action("move_to_units", motor, position, velocity)
 
-    def move_by(self, motor: int | str, difference: int, velocity: Optional[int] = None) -> None:
+    def move_by(self, motor: Union[int, str], difference: int, velocity: Optional[int] = None
+                ) -> None:
         """Move to a specific position."""
         if velocity is None:
             return self.call_action("move_by", motor, difference)
         else:
             return self.call_action("move_by", motor, difference, velocity)
 
-    def move_by_units(self, motor: int | str, difference: float, velocity: Optional[int] = None
+    def move_by_units(self, motor: Union[int, str], difference: float,
+                      velocity: Optional[int] = None
                       ) -> None:
         """Move to a specific position."""
         if velocity is None:
@@ -164,20 +167,20 @@ class MotorDirector(Director):
         else:
             return self.call_action("move_by_units", motor, difference, velocity)
 
-    def rotate(self, motor: int | str, velocity: int) -> None:
+    def rotate(self, motor: Union[int, str], velocity: int) -> None:
         """Rotate the motor with a specific velocity."""
         return self.call_action("rotate", motor, velocity)
 
-    def get_position_reached(self, motor: int | str) -> bool:
+    def get_position_reached(self, motor: Union[int, str]) -> bool:
         """Get whether the motor reached its position."""
         return self.call_action("get_position_reached", motor)
 
-    def get_motor_dict(self) -> dict:
-        """Get the motor name dictionary."""
+    def get_motor_dict(self) -> dict[str, int]:
+        """Get the motor name dictionary assigning names to the motor numbers."""
         return self.call_action("get_motor_dict")
 
-    def set_motor_dict(self, motor: int | str, motor_dict: dict) -> None:
-        """Set a motor name dictionary (dict type)."""
+    def set_motor_dict(self, motor_dict: dict[str, int]) -> None:
+        """Set a motor name dictionary assigning names to the motor numbers."""
         return self.call_action("set_motor_dict", motor_dict)
 
     # In/outs
