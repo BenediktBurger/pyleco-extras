@@ -1,11 +1,4 @@
 # -*- coding: utf-8 -*-
-"""Control motors
-
-
-Created on Tue Nov 29 17:34:36 2022
-
-@author: moneke
-"""
 
 from typing import Any, Optional, Union
 
@@ -17,8 +10,8 @@ from pyleco.utils.message_handler import MessageHandler
 from devices import motors
 
 
-class MotorController(MessageHandler):
-    """Control a motorcard.
+class TMCMotorActor(MessageHandler):
+    """Control a Trinamic TMC motorcard.
 
     You may supply any value as a motor argument. Either the motor number as an
     integer or a valid key of the motorDict dictionary.

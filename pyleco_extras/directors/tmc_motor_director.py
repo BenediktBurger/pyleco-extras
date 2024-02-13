@@ -1,7 +1,7 @@
 #
 # This file is part of the PyLECO package.
 #
-# Copyright (c) 2023-2023 PyLECO Developers
+# Copyright (c) 2023-2024 PyLECO Developers
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -34,8 +34,8 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 
-class MotorDirector(Director):
-    """Direct a stepper motor card.
+class TMCMotorDirector(Director):
+    """Direct a Trinamic TMC stepper motor card, corresponding to the `TMCMotorActor`.
 
     :param str actor: Name of the card actor.
     :param int motor_count: Number of motor connections.
@@ -49,8 +49,8 @@ class MotorDirector(Director):
     class Motor:
         """Simulating a real motor as a drop in replacement for a motor card."""
 
-        def __init__(self, parent: "MotorDirector", number: int) -> None:
-            self.parent: MotorDirector = parent
+        def __init__(self, parent: "TMCMotorDirector", number: int) -> None:
+            self.parent: TMCMotorDirector = parent
             self.number = number
 
         AP = TMCM6110._MotorTypeA.AP

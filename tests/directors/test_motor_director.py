@@ -5,17 +5,17 @@ import pytest
 
 from pyleco.test import FakeDirector
 
-from pyleco_extras.directors.motor_director import MotorDirector
-from pyleco_extras.actors.motor_controller import MotorController
+from pyleco_extras.directors.tmc_motor_director import TMCMotorDirector
+from pyleco_extras.actors.tmc_motor_actor import TMCMotorActor
 
 
-class FakeMotorDirector(FakeDirector, MotorDirector):
+class FakeMotorDirector(FakeDirector, TMCMotorDirector):
     pass
 
 
 @pytest.fixture
 def motor_director():
-    return FakeMotorDirector(actor="remote", remote_class=MotorController)
+    return FakeMotorDirector(actor="remote", remote_class=TMCMotorActor)
 
 
 general_methods: list[str] = [
@@ -67,8 +67,8 @@ io_write_methods = [
         + io_write_methods
         )
 def test_start_collecting_signature(method: str):
-    orig_spec = getfullargspec(getattr(MotorController, method))
-    dir_spec = getfullargspec(getattr(MotorDirector, method))
+    orig_spec = getfullargspec(getattr(TMCMotorActor, method))
+    dir_spec = getfullargspec(getattr(TMCMotorDirector, method))
     assert orig_spec == dir_spec
 
 
