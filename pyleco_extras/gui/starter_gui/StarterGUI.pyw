@@ -7,7 +7,7 @@ created on 23.11.2020 by Benedikt Moneke
 # Standard packages.
 from enum import Enum
 import logging
-from typing import Dict, Tuple
+from typing import Any, Dict, Tuple
 
 # 3rd party packages.
 from PyQt6 import QtCore, QtGui, QtWidgets
@@ -17,7 +17,7 @@ from PyQt6.QtGui import QColor
 from pyleco.directors.starter_director import StarterDirector
 from pyleco.core.message import Message
 from pyleco.management.starter import Status
-from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindowDesigner, start_app
+from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindowDesigner, start_app, Path
 
 # Local packages.
 from pyleco_extras.gui.starter_gui.data.settings import Settings
@@ -81,7 +81,10 @@ class StarterGUI(LECOBaseMainWindowDesigner):
 
     def __init__(self, name="StarterGUI", host="localhost", **kwargs):
         # Use initialization of parent class QMainWindow.
-        super().__init__(name=name, host=host, ui_file_name="StarterGUI", logger=gLog,
+        super().__init__(name=name, host=host,
+                         ui_file_name="StarterGUI",
+                         ui_file_path=Path(__file__).parent / "data",
+                         logger=gLog,
                          settings_dialog_class=Settings,
                          **kwargs)
 
@@ -214,7 +217,7 @@ class StarterGUI(LECOBaseMainWindowDesigner):
             cid = self.director.ask_rpc_async(method="status_tasks", actor=name)
             self.cids[cid] = ("status_tasks", starter)  # type: ignore
 
-    def set_starter_status(self, starter: StarterItem, data: dict) -> None:
+    def set_starter_status(self, starter: StarterItem, data: dict[str, Any]) -> None:
         """Set the status of `starter`'s tasks."""
         try:
             status = data["result"]
