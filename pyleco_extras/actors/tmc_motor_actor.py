@@ -133,18 +133,20 @@ class TMCMotorActor(MessageHandler):
         self.stop(motor)
         self.device.motors[motor].actual_position = steps
 
-    def move_to(self, motor: Union[int, str], position: int, velocity: int | None = None) -> None:
+    def move_to(self, motor: Union[int, str], position: int, velocity: Optional[int] = None
+                ) -> None:
         """Move to a specific position."""
         self._voltage_check()
         motor = self._get_motor_number(motor)
         self.device.move_to(motor, position, velocity)
 
-    def move_by(self, motor: Union[int, str], difference: int, velocity: int | None = None) -> None:
+    def move_by(self, motor: Union[int, str], difference: int, velocity: Optional[int] = None
+                ) -> None:
         self._voltage_check()
         motor = self._get_motor_number(motor)
         self.device.move_by(motor, difference, velocity)
 
-    def move_to_units(self, motor: Union[int, str], position: float, velocity: int | None = None
+    def move_to_units(self, motor: Union[int, str], position: float, velocity: Optional[int] = None
                       ) -> None:
         """Move to a specific position in units."""
         motor = self._get_motor_number(motor)
@@ -157,7 +159,7 @@ class TMCMotorActor(MessageHandler):
             self.move_to(motor, position, velocity)
 
     def move_by_units(self, motor: Union[int, str], difference: float,
-                      velocity: int | None = None) -> None:
+                      velocity: Optional[int] = None) -> None:
         motor = self._get_motor_number(motor)
         try:
             difference = motor_utils.unitsToSteps(difference, self.configs[motor])
