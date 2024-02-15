@@ -115,5 +115,5 @@ class DataLoggerViewer(DataLoggerBase):
             self.lbCount.setText(f"Data points: {length}")
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     start_app(DataLoggerViewer)

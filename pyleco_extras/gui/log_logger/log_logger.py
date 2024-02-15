@@ -20,7 +20,7 @@ from pyleco.utils.log_levels import get_leco_log_level
 from pyleco.core import LOG_SENDING_PORT
 from pyleco.core.data_message import DataMessage, MessageTypes
 
-from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindowDesigner, start_app
+from pyleco_extras.gui_utils.base_main_window import LECOBaseMainWindowDesigner, start_app, Path
 from pyleco_extras.gui.log_logger.data.settings import Settings
 
 
@@ -55,6 +55,14 @@ class SignalHandler(QueueHandler):
 class LogLogger(LECOBaseMainWindowDesigner):
     """Log log entries emitted from other software."""
 
+    actionSave: QtGui.QAction
+    actionReset: QtGui.QAction
+    actionSet_Debug: QtGui.QAction
+    actionSet_Info: QtGui.QAction
+    actionSet_Warning: QtGui.QAction
+    actionSet_Error: QtGui.QAction
+    actionRescale: QtGui.QAction
+
     leSender: QtWidgets.QLineEdit
     pbSubscribe: QtWidgets.QPushButton
     bbSender: QtWidgets.QComboBox
@@ -65,9 +73,12 @@ class LogLogger(LECOBaseMainWindowDesigner):
 
     def __init__(self, name: str = "LogLogger", host: str = "localhost", **kwargs) -> None:
         # Use initialization of parent class QMainWindow.
-        super().__init__(name=name, ui_file_name="LogLogger",
+        super().__init__(name=name,
+                         ui_file_name="LogLogger",
+                         ui_file_path=Path(__file__).parent / "data",
                          settings_dialog_class=Settings,
-                         host=host, data_port=LOG_SENDING_PORT,
+                         host=host,
+                         data_port=LOG_SENDING_PORT,
                          **kwargs)
 
         self.restoreConfiguration()
@@ -143,11 +154,9 @@ class LogLogger(LECOBaseMainWindowDesigner):
         if "." in name:
             return name
         else:
-            try:
-                fname = ".".join((self.communicator.namespace, name))
-            except TypeError:
-                fname = ".".join((self.lastNode, name))
-            return fname
+            cns = self.communicator.namespace
+            namespace = self.lastNode if cns is None else cns
+            return ".".join((namespace, name))
 
     def subscribe(self) -> None:
         """Unsubscribe to old values and subscribe to new ones.
@@ -178,7 +187,8 @@ class LogLogger(LECOBaseMainWindowDesigner):
 
     @pyqtSlot(DataMessage)
     def add_entry_from_message(self, message: DataMessage) -> None:
-        self.add_log_entry(emitter=message.topic.decode(), log_entry=message.data)
+        self.add_log_entry(emitter=message.topic.decode(),
+                           log_entry=message.data)  # type: ignore
 
     @pyqtSlot(dict)
     def add_entry_old_style(self, data: dict[str, list[str]]) -> None:
@@ -261,10 +271,10 @@ class LogLogger(LECOBaseMainWindowDesigner):
         if self.current_name == "self":
             gLog.setLevel(level)
         else:
-            level = get_leco_log_level(level).value
+            level_name = get_leco_log_level(level).value
             self.communicator.send(receiver=self.current_name, data={
                 'id': 1, 'method': "set_log_level",
-                "params": {"level": level}, "jsonrpc": "2.0"},
+                "params": {"level": level_name}, "jsonrpc": "2.0"},
                 message_type=MessageTypes.JSON,
                 )
 
@@ -279,6 +289,5 @@ class LogLogger(LECOBaseMainWindowDesigner):
     # add sorting, see https://doc.qt.io/qt-6/qtwidgets-itemviews-customsortfiltermodel-example.html
 
 
-if __name__ == '__main__':  # if this is the started script file
-    """Start the main window if this is the called script file."""
+if __name__ == '__main__':  # pragma: no cover
     start_app(main_window_class=LogLogger)

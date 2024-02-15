@@ -599,5 +599,5 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         clipboard.setText("\n".join(text_elements))
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     start_app(main_window_class=DataLoggerBase)

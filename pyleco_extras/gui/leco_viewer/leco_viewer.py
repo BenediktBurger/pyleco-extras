@@ -70,5 +70,5 @@ class LECOViewer(LECOBaseMainWindowNoDesigner):
             self.tv.setExpanded(i, True)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     start_app(LECOViewer)

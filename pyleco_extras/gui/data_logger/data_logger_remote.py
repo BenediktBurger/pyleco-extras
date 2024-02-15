@@ -289,5 +289,5 @@ class DataLoggerRemote(DataLoggerBase):
             log.warning(f"Unknown data message {datapoint} from {sender} received.")
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     start_app(DataLoggerRemote)
