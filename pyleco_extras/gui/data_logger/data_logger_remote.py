@@ -40,6 +40,7 @@ class DataLoggerRemote(DataLoggerBase):
     :param name: Name of this program.
     :param host: Host of the Coordinator.
     """
+
     remote_length: int = 0
 
     def __init__(self, name: str = "DataLoggerRemote", host: str = "localhost", **kwargs) -> None:
@@ -53,10 +54,13 @@ class DataLoggerRemote(DataLoggerBase):
         self.lbRemoteCount = QtWidgets.QLabel()
         self.statusBar().addWidget(self.lbRemoteCount)
         self.lbRemoteCount.show()
-        self.actionReset = QtGui.QAction("Reset local storage",)
+        self.actionReset = QtGui.QAction(
+            "Reset local storage",
+        )
         self.actionReset.setIconText("Reset")
-        self.actionReset.setToolTip("Reset the locally stored data points without touching the "
-                                    "actual data acquisition.")
+        self.actionReset.setToolTip(
+            "Reset the locally stored data points without touching the " "actual data acquisition."
+        )
         self.actionReset.triggered.connect(self.reset)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionReset)
@@ -115,8 +119,9 @@ class DataLoggerRemote(DataLoggerBase):
 
     def set_properties(self, properties: dict[str, Any]) -> None:
         try:
-            self.communicator.ask_rpc(receiver=self.remote, method="set_configuration",
-                                      configuration=properties)
+            self.communicator.ask_rpc(
+                receiver=self.remote, method="set_configuration", configuration=properties
+            )
         except ServerError as exc:
             self.statusBar().showMessage(f"Communication error: {exc.rpc_error.message}", 3000)
         except (ConnectionError, TimeoutError) as exc:
@@ -151,6 +156,7 @@ class DataLoggerRemote(DataLoggerBase):
             self.timer.start(settings.value("interval", 1000, int))
 
     "GUI interaction"
+
     # Trigger
     @pyqtSlot(bool)
     def toggleNone(self, checked: bool) -> None:
@@ -188,7 +194,7 @@ class DataLoggerRemote(DataLoggerBase):
             trigger_variable=self.trigger_variable,
             valuing_mode=self.valuing_mode,
             value_repeating=self.value_repeating,
-            )
+        )
         self.reset()
 
     @pyqtSlot(bool)
@@ -237,6 +243,7 @@ class DataLoggerRemote(DataLoggerBase):
         self.set_property("variablesText", text)
 
     "Regular readout"
+
     def _add_datapoint_to_lists(self, datapoint: dict[str, Any]) -> None:
         for key, value in datapoint.items():
             if value is None:
@@ -289,5 +296,5 @@ class DataLoggerRemote(DataLoggerBase):
             log.warning(f"Unknown data message {datapoint} from {sender} received.")
 
 
-if __name__ == '__main__':  # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
     start_app(DataLoggerRemote)

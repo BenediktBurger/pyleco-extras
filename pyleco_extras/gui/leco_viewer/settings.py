@@ -4,7 +4,6 @@ Module for the Settings dialog class.
 Created on Thu Nov 26 19:02:38 2020 by Benedikt Moneke
 """
 
-
 from qtpy import QtWidgets
 
 from devices.base_settings import BaseSettings

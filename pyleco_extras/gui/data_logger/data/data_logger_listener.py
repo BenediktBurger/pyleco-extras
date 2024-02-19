@@ -1,4 +1,3 @@
-
 # Standard packages.
 import datetime
 import logging
@@ -17,6 +16,7 @@ from pyleco.utils.qt_listener import ListenerSignals
 
 class Signals(ListenerSignals):
     """Signals for the DataLogger message handler."""
+
     started = Signal()
     configuration_changed = Signal(dict)
     datapoint_ready = Signal(dict)
@@ -35,14 +35,14 @@ class DataLoggerCore(PipeHandler, DataLogger):
     def calculate_data(self) -> dict[str, Any]:
         # might enter the datalogger itself.
         d = super().calculate_data()
-        if 'time_h' in d:
+        if "time_h" in d:
             if "time" in d:
                 v = d["time"] / 3600
             else:
                 now = datetime.datetime.now(datetime.timezone.utc)
                 time = (now - self._today_zero).total_seconds()
                 v = time / 3600
-            d['time_h'] = v
+            d["time_h"] = v
             self.lists["time_h"][-1] = v
         return d
 
@@ -57,35 +57,43 @@ class DataLoggerCore(PipeHandler, DataLogger):
     def set_plot_configuration(self, plot_configuration: list[dict[str, Any]]) -> None:
         self.signals.plot_configuration_changed.emit(plot_configuration)
 
-    def start_collecting(self, *,
-                         variables: list[str] | None = None,
-                         units: Optional[dict[str, Any]] = None,
-                         trigger_type: TriggerTypes | None = None,
-                         trigger_timeout: float | None = None,
-                         trigger_variable: str | None = None,
-                         valuing_mode: ValuingModes | None = None,
-                         value_repeating: bool | None = None) -> None:
-        retv = super().start_collecting(variables=variables,
-                                        units=units,
-                                        trigger_type=trigger_type,
-                                        trigger_timeout=trigger_timeout,
-                                        trigger_variable=trigger_variable,
-                                        valuing_mode=valuing_mode,
-                                        value_repeating=value_repeating)
-        conf = dict(variables=variables,
-                    units=units,
-                    trigger_timeout=trigger_timeout,
-                    trigger_type=trigger_type,
-                    trigger_variable=trigger_variable,
-                    valuing_mode=valuing_mode,
-                    value_repeating=value_repeating)
+    def start_collecting(
+        self,
+        *,
+        variables: Optional[list[str]] = None,
+        units: Optional[dict[str, Any]] = None,
+        trigger_type: Optional[TriggerTypes] = None,
+        trigger_timeout: Optional[float] = None,
+        trigger_variable: Optional[str] = None,
+        valuing_mode: Optional[ValuingModes] = None,
+        value_repeating: Optional[bool] = None,
+    ) -> None:
+        retv = super().start_collecting(
+            variables=variables,
+            units=units,
+            trigger_type=trigger_type,
+            trigger_timeout=trigger_timeout,
+            trigger_variable=trigger_variable,
+            valuing_mode=valuing_mode,
+            value_repeating=value_repeating,
+        )
+        conf = dict(
+            variables=variables,
+            units=units,
+            trigger_timeout=trigger_timeout,
+            trigger_type=trigger_type,
+            trigger_variable=trigger_variable,
+            valuing_mode=valuing_mode,
+            value_repeating=value_repeating,
+        )
         for key in list(conf.keys()):
             if conf[key] is None:
                 del conf[key]
         self.set_configuration(conf)
         self.signals.started.emit()
-        self._today_zero = datetime.datetime.combine(self.today, datetime.time(),
-                                                     datetime.timezone.utc)
+        self._today_zero = datetime.datetime.combine(
+            self.today, datetime.time(), datetime.timezone.utc
+        )
         return retv
 
     def register_rpc_methods(self) -> None:
@@ -141,17 +149,44 @@ class DataLoggerListener(Listener):
 
     message_handler: DataLoggerCore
 
-    def __init__(self, name: str, host: str = "localhost", port: int = COORDINATOR_PORT,
-                 data_host: str | None = None, data_port: int = PROXY_SENDING_PORT,
-                 logger: logging.Logger | None = None, timeout: float = 1, **kwargs) -> None:
-        super().__init__(name=name, host=host, port=port, data_host=data_host, data_port=data_port,
-                         logger=logger, timeout=timeout,
-                         **kwargs)
+    def __init__(
+        self,
+        name: str,
+        host: str = "localhost",
+        port: int = COORDINATOR_PORT,
+        data_host: Optional[str] = None,
+        data_port: int = PROXY_SENDING_PORT,
+        logger: Optional[logging.Logger] = None,
+        timeout: float = 1,
+        **kwargs,
+    ) -> None:
+        super().__init__(
+            name=name,
+            host=host,
+            port=port,
+            data_host=data_host,
+            data_port=data_port,
+            logger=logger,
+            timeout=timeout,
+            **kwargs,
+        )
         self.signals = Signals()
 
-    def _listen(self, name: str, stop_event: Event, coordinator_host: str, coordinator_port: int,
-                data_host: str, data_port: int) -> None:
-        self.message_handler = DataLoggerCore(name, signals=self.signals,
-                                              host=coordinator_host, port=coordinator_port,
-                                              data_host=data_host, data_port=data_port)
+    def _listen(
+        self,
+        name: str,
+        stop_event: Event,
+        coordinator_host: str,
+        coordinator_port: int,
+        data_host: str,
+        data_port: int,
+    ) -> None:
+        self.message_handler = DataLoggerCore(
+            name,
+            signals=self.signals,
+            host=coordinator_host,
+            port=coordinator_port,
+            data_host=data_host,
+            data_port=data_port,
+        )
         self.message_handler.listen(stop_event=stop_event)

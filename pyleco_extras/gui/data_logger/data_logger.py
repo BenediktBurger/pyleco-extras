@@ -124,7 +124,7 @@ class DataLoggerGUI(DataLoggerBase):
         self.leSavedName.setText("Saving...")
         self.statusBar().showMessage("Saving...")
         settings = QtCore.QSettings()
-        folder = settings.value('savePath', type=str)
+        folder = settings.value("savePath", type=str)
         self.listener.message_handler.directory = folder
         if meta is None:
             meta = {}
@@ -136,7 +136,7 @@ class DataLoggerGUI(DataLoggerBase):
                 header=f"{self.leHeader.toPlainText()}\n{self.leVariables.text()}",
                 meta=meta,
                 suffix=suffix,
-                )
+            )
         except Exception as exc:
             log.exception("Some type error during saving occurred.", exc_info=exc)
             self.leSavedName.setText("Error")
@@ -160,15 +160,16 @@ class DataLoggerGUI(DataLoggerBase):
     def start(self) -> None:
         """Start a measurement."""
         try:
-            self.communicator.ask_handler(method="start_collecting",
-                                          variables=self.variables,
-                                          units=self.units,
-                                          trigger_type=self.trigger_type,
-                                          trigger_timeout=self.trigger_timeout,
-                                          trigger_variable=self.trigger_variable,
-                                          valuing_mode=self.valuing_mode,
-                                          value_repeating=self.value_repeating,
-                                          )
+            self.communicator.ask_handler(
+                method="start_collecting",
+                variables=self.variables,
+                units=self.units,
+                trigger_type=self.trigger_type,
+                trigger_timeout=self.trigger_timeout,
+                trigger_variable=self.trigger_variable,
+                valuing_mode=self.valuing_mode,
+                value_repeating=self.value_repeating,
+            )
         except ServerError as exc:
             self.statusBar().showMessage(f"Communication error: {exc.rpc_error.message}", 3000)
         except (ConnectionError, TimeoutError) as exc:
@@ -221,5 +222,5 @@ class DataLoggerGUI(DataLoggerBase):
             clipboard.setText(name)
 
 
-if __name__ == '__main__':  # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
     start_app(DataLoggerGUI)

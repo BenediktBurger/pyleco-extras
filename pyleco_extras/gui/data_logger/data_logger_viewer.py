@@ -30,8 +30,7 @@ unit = u
 def seconds_utc_to_time(seconds: int):
     """Return the time of a seconds value."""
     today = datetime.datetime.now(datetime.timezone.utc).date()
-    today_dt = datetime.datetime.combine(today, datetime.time(),
-                                         datetime.timezone.utc)
+    today_dt = datetime.datetime.combine(today, datetime.time(), datetime.timezone.utc)
     return (today_dt + datetime.timedelta(seconds=seconds)).astimezone().time()
 
 
@@ -59,9 +58,17 @@ class DataLoggerViewer(DataLoggerBase):
         self.actionStart.triggered.connect(self.start)
 
     def setup_buttons(self) -> None:
-        for widget in (self.cbTimer, self.sbTimeout, self.cbTrigger, self.leTrigger,
-                       self.cbValueLast, self.cbValueMean, self.cbRepeat, self.leHeader,
-                       self.leVariables):
+        for widget in (
+            self.cbTimer,
+            self.sbTimeout,
+            self.cbTrigger,
+            self.leTrigger,
+            self.cbValueLast,
+            self.cbValueMean,
+            self.cbRepeat,
+            self.leHeader,
+            self.leVariables,
+        ):
             widget.setEnabled(False)
         self.actionStart.setToolTip("Load a measurement file.")
 
@@ -70,6 +77,7 @@ class DataLoggerViewer(DataLoggerBase):
         pass  # do nothing, no timers needed.
 
     "GUI interaction"
+
     # Controls
     @pyqtSlot()
     def start(self):
@@ -78,15 +86,19 @@ class DataLoggerViewer(DataLoggerBase):
         file_name = QtWidgets.QFileDialog.getOpenFileName(
             self,
             caption="Open file",
-            directory=self.last_path or settings.value('savePath', type=str),
-            filter=(";;".join((
-                "JSON (*.json)",
-                f"This year ({strftime('%Y')}_*)",
-                f"This month ({strftime('%Y_%m')}_*)",
-                f"Today ({strftime('%Y_%m_%d')}*)",
-                "Pickled (*.pkl)",
-                "All files (*)",
-                )))
+            directory=self.last_path or settings.value("savePath", type=str),
+            filter=(
+                ";;".join(
+                    (
+                        "JSON (*.json)",
+                        f"This year ({strftime('%Y')}_*)",
+                        f"This month ({strftime('%Y_%m')}_*)",
+                        f"Today ({strftime('%Y_%m_%d')}*)",
+                        "Pickled (*.pkl)",
+                        "All files (*)",
+                    )
+                )
+            ),
         )[0]
         if file_name == "":
             return  # user pressed cancel
@@ -115,5 +127,5 @@ class DataLoggerViewer(DataLoggerBase):
             self.lbCount.setText(f"Data points: {length}")
 
 
-if __name__ == '__main__':  # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
     start_app(DataLoggerViewer)

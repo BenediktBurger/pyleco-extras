@@ -2,7 +2,6 @@
 Base File for the DataLogger family.
 """
 
-
 # Standard packages.
 import logging
 from pathlib import Path
@@ -25,8 +24,8 @@ log.addHandler(logging.StreamHandler())
 
 
 class DataLoggerBase(LECOBaseMainWindowDesigner):
-    """Base class for the DataLogger family.
-    """
+    """Base class for the DataLogger family."""
+
     data_length_limit: int = 0  # length of list lengths
 
     actionStart: QtGui.QAction
@@ -58,9 +57,12 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
 
     def __init__(self, name: str, **kwargs) -> None:
         # Use initialization of parent class QMainWindow.
-        super().__init__(name=name, ui_file_name="DataLogger",
-                         ui_file_path=Path(__file__).parent / "data",
-                         **kwargs)
+        super().__init__(
+            name=name,
+            ui_file_name="DataLogger",
+            ui_file_path=Path(__file__).parent / "data",
+            **kwargs,
+        )
 
         # Load the user interface file, and configure the dock area and show it.
         self.dockArea = DockArea()
@@ -86,6 +88,7 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
 
     class Signals(QtCore.QObject):
         """Signals for the DataLogger."""
+
         starter = QtCore.pyqtSignal()  # start the listener
         started = QtCore.pyqtSignal()  # a new measurement started, update variable names
         update_plots = QtCore.pyqtSignal()  # update the plots.
@@ -143,7 +146,7 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
     def read_configuration(self) -> dict[str, Any]:
         """Read the last configuration."""
         settings = QtCore.QSettings()
-        return settings.value('configuration', type=dict)
+        return settings.value("configuration", type=dict)
 
     def restore_configuration(self) -> None:
         """Restore the last configuration"""
@@ -214,29 +217,29 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
     def store_configuration(self) -> None:
         """Store the currently used configuration."""
         settings = QtCore.QSettings()
-        settings.setValue('configuration', self.get_configuration())
+        settings.setValue("configuration", self.get_configuration())
         # # Store the window geometry
         settings.setValue("geometry", self.saveGeometry())
 
     def get_logger_configuration(self) -> dict[str, Any]:
         config = {}
         # Trigger
-        config['trigger_type'] = self.trigger_type.value
-        config['trigger_timeout'] = self.trigger_timeout
-        config['trigger_variable'] = self.trigger_variable
+        config["trigger_type"] = self.trigger_type.value
+        config["trigger_timeout"] = self.trigger_timeout
+        config["trigger_variable"] = self.trigger_variable
         # Value
-        config['variables'] = self.variables
-        config['units'] = self.units
-        config['valuing_mode'] = self.valuing_mode
-        config['value_repeating'] = self.value_repeating
+        config["variables"] = self.variables
+        config["units"] = self.units
+        config["valuing_mode"] = self.valuing_mode
+        config["value_repeating"] = self.value_repeating
         return config
 
     def get_gui_configuration(self) -> dict[str, Any]:
         config = {}
-        config['header'] = self.leHeader.document().toPlainText()  # type: ignore
-        config['unitsText'] = ""  # to clear it for feature removal
-        config['autoSave'] = self.actionAutoSave.isChecked()
-        config['pause'] = self.actionPause.isChecked()
+        config["header"] = self.leHeader.document().toPlainText()  # type: ignore
+        config["unitsText"] = ""  # to clear it for feature removal
+        config["autoSave"] = self.actionAutoSave.isChecked()
+        config["pause"] = self.actionPause.isChecked()
         return config
 
     def get_configuration(self) -> dict[str, Any]:
@@ -372,28 +375,29 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
                     continue
         return units
 
-    def _set_config(self,
-                    trigger_type: str | None = None,
-                    trigger_timeout: float | None = None,
-                    trigger_variable: str | None = None,
-                    valuing_mode: str | None = None,
-                    value_repeating: bool | None = None,
-                    header: str | None = None,
-                    variables: Iterable[str] | None = None,
-                    variablesText: str | None = None,
-                    units: dict[str, str] | None = None,
-                    unitsText: str | None = None,
-                    meta: Any | None = None,
-                    autoSaveInterval: float | None = None,
-                    autoSave: bool | None = None,
-                    autoCut: int | None = None,
-                    pause: bool | None = None,
-                    start: bool = False,
-                    **kwargs
-                    ) -> None:
+    def _set_config(
+        self,
+        trigger_type: str | None = None,
+        trigger_timeout: float | None = None,
+        trigger_variable: str | None = None,
+        valuing_mode: str | None = None,
+        value_repeating: bool | None = None,
+        header: str | None = None,
+        variables: Iterable[str] | None = None,
+        variablesText: str | None = None,
+        units: dict[str, str] | None = None,
+        unitsText: str | None = None,
+        meta: Any | None = None,
+        autoSaveInterval: float | None = None,
+        autoSave: bool | None = None,
+        autoCut: int | None = None,
+        pause: bool | None = None,
+        start: bool = False,
+        **kwargs,
+    ) -> None:
         settings = QtCore.QSettings()
         # deprecated values
-        if (trigger := kwargs.get("trigger")):
+        if trigger := kwargs.get("trigger"):
             self.trigger_type = trigger
         # end of deprecated values
         if trigger_type is not None:
@@ -419,12 +423,14 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         if meta is not None:
             self.user_data = meta
         if autoSaveInterval is not None:
-            self.auto_save_timer.setInterval(autoSaveInterval * 60 * 1000)  # min to ms  # type: ignore  # noqa
-            settings.setValue('autoSaveInterval', autoSaveInterval)
+            self.auto_save_timer.setInterval(  # type: ignore  # noqa
+                autoSaveInterval * 60 * 1000
+            )  # min to ms
+            settings.setValue("autoSaveInterval", autoSaveInterval)
         if autoSave is not None:
             self.actionAutoSave.setChecked(autoSave)
         if autoCut is not None:
-            settings.setValue('autoCut', autoCut)
+            settings.setValue("autoCut", autoCut)
         if pause is not None:
             self.actionPause.setChecked(pause)
         log.debug(f"Additional arguments {kwargs}")
@@ -432,24 +438,27 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         if start:
             self.start()
 
-    def start_collecting(self, *,
-                         variables: Optional[list[str]] = None,
-                         units: Optional[dict[str, Any]] = None,
-                         trigger_type: Optional[TriggerTypes] = None,
-                         trigger_timeout: Optional[float] = None,
-                         trigger_variable: Optional[str] = None,
-                         valuing_mode: Optional[ValuingModes] = None,
-                         value_repeating: Optional[bool] = None,
-                         ) -> None:
+    def start_collecting(
+        self,
+        *,
+        variables: Optional[list[str]] = None,
+        units: Optional[dict[str, Any]] = None,
+        trigger_type: Optional[TriggerTypes] = None,
+        trigger_timeout: Optional[float] = None,
+        trigger_variable: Optional[str] = None,
+        valuing_mode: Optional[ValuingModes] = None,
+        value_repeating: Optional[bool] = None,
+    ) -> None:
         """Start collecting data."""
-        self._set_config(variables=variables,
-                         units=units,
-                         trigger_type=trigger_type,
-                         trigger_timeout=trigger_timeout,
-                         trigger_variable=trigger_variable,
-                         value_repeating=value_repeating,
-                         valuing_mode=valuing_mode,
-                         )
+        self._set_config(
+            variables=variables,
+            units=units,
+            trigger_type=trigger_type,
+            trigger_timeout=trigger_timeout,
+            trigger_variable=trigger_variable,
+            value_repeating=value_repeating,
+            valuing_mode=valuing_mode,
+        )
         self.start()
 
     def heartbeat(self) -> None:
@@ -470,34 +479,30 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         """Spawn a new plot with autocut."""
         self.spawnPlot()
 
-    def spawnPlot(self, autoCut: Optional[int] = None, type: str = "",
-                  name: Optional[str] = None,
-                  **kwargs) -> None:
+    def spawnPlot(
+        self, autoCut: Optional[int] = None, type: str = "", name: Optional[str] = None, **kwargs
+    ) -> None:
         """Spawn a new plot window.
 
         :param autoCut: Last values to show. If None, read from settings. 0 means all.
         :param multi: Show the multi plot window.
         """
         settings = QtCore.QSettings()
-        grid = settings.value('grid', True, type=bool)
+        grid = settings.value("grid", True, type=bool)
         if autoCut is None:
-            autoCut = settings.value('autoCut', 200, type=int)
+            autoCut = settings.value("autoCut", 200, type=int)
         if name is None:
             name = f"Plot {self.dock_count}"
             self.dock_count += 1
         if type == "MultiPlotWidget":
-            plot = MultiPlotWidget(self,
-                                   autoCut=autoCut,  # type: ignore
-                                   grid=grid,
-                                   log=log,
-                                   **kwargs)
+            plot = MultiPlotWidget(
+                self, autoCut=autoCut, grid=grid, log=log, **kwargs  # type: ignore
+            )
             dock = Dock(name=name, closable=True, widget=plot)
         else:
-            plot = SinglePlotWidget(self,
-                                    autoCut=autoCut,  # type: ignore
-                                    grid=grid,
-                                    log=log,
-                                    **kwargs)
+            plot = SinglePlotWidget(
+                self, autoCut=autoCut, grid=grid, log=log, **kwargs  # type: ignore
+            )
             dock = Dock(name=name, closable=True, widget=plot)
         self.dockArea.addDock(dock)
 
@@ -515,6 +520,7 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         self.dock_count = 0
 
     "Default settings"
+
     @pyqtSlot()
     def save_configuration(self) -> None:
         """Save an executable configuration file according to the current configuration."""
@@ -522,30 +528,39 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         settings = QtCore.QSettings()
         config = self.get_logger_configuration()
         p_conf = self.get_plot_configuration()
-        text = "\n".join([
-            "from pyleco.directors.data_logger_director import DataLoggerDirector",
-            "", "",  # empty lines
-            f"name = '{self.windowTitle()}'",
-            "", "",  # empty lines
-            "configuration = {",
-            *[f"""    '{key}': {f'"{value}"' if isinstance(value, str) else value},"""
-              for key, value in config.items()],
-            "}",
-            "", "",  # empty lines
-            f"gui_configuration = {repr(self.get_gui_configuration())}",
-            "", "",  # empty lines
-            "plot_configuration = [",
-            *[f"    {repr(conf)}," for conf in p_conf],
-            "]",
-            "", "",  # empty lines
-            "if __name__ == '__main__':",
-            "    with DataLoggerDirector(name='call' + name, actor=name) as d:",
-            "        # print(d.save_data())",
-            "        print(d.ask_rpc(method='set_configuration', configuration=gui_configuration))",
-            "        print(d.start_collecting(**configuration))",
-            "        print(d.ask_rpc(method='set_plot_configuration', plot_configuration=plot_configuration))",  # noqa
-            "",  # empty line
-        ])
+        text = "\n".join(
+            [
+                "from pyleco.directors.data_logger_director import DataLoggerDirector",
+                "",
+                "",  # empty lines
+                f"name = '{self.windowTitle()}'",
+                "",
+                "",  # empty lines
+                "configuration = {",
+                *[
+                    f"""    '{key}': {f'"{value}"' if isinstance(value, str) else value},"""
+                    for key, value in config.items()
+                ],
+                "}",
+                "",
+                "",  # empty lines
+                f"gui_configuration = {repr(self.get_gui_configuration())}",
+                "",
+                "",  # empty lines
+                "plot_configuration = [",
+                *[f"    {repr(conf)}," for conf in p_conf],
+                "]",
+                "",
+                "",  # empty lines
+                "if __name__ == '__main__':",
+                "    with DataLoggerDirector(name='call' + name, actor=name) as d:",
+                "        # print(d.save_data())",
+                "        print(d.ask_rpc(method='set_configuration', configuration=gui_configuration))",  # noqa
+                "        print(d.start_collecting(**configuration))",
+                "        print(d.ask_rpc(method='set_plot_configuration', plot_configuration=plot_configuration))",  # noqa
+                "",  # empty line
+            ]
+        )
         start = settings.value("configPath")
         path = QtWidgets.QFileDialog.getSaveFileName(
             self,
@@ -573,8 +588,12 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
     def show_data_point(self, datapoint: dict[str, Any]) -> None:
         self.show_list_length()
         self.lbVariables.setText("\n".join(datapoint.keys()))
-        self.lbValues.setText("\n".join(
-            f"{value} {self.current_units.get(variable, '')}" for variable, value in datapoint.items()))  # noqa
+        self.lbValues.setText(
+            "\n".join(
+                f"{value} {self.current_units.get(variable, '')}"
+                for variable, value in datapoint.items()
+            )
+        )  # noqa
         if time.perf_counter() < self._limit:
             # Only update plots, if no lag occurs.
             self.signals.update_plots.emit()

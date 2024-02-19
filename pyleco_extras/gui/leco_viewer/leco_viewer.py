@@ -9,13 +9,8 @@ from pyleco_extras.gui.leco_viewer.settings import Settings
 class LECOViewer(LECOBaseMainWindowNoDesigner):
     """Show the known network structure with the Coordinators and Components."""
 
-    def __init__(self, name: str = "CoordinatorViewer",
-                 host: str = "localhost",
-                 **kwargs) -> None:
-        super().__init__(name,
-                         settings_dialog_class=Settings,
-                         host=host,
-                         **kwargs)
+    def __init__(self, name: str = "CoordinatorViewer", host: str = "localhost", **kwargs) -> None:
+        super().__init__(name, settings_dialog_class=Settings, host=host, **kwargs)
         self._setup_model()
 
         self.director = CoordinatorDirector(communicator=self.communicator)
