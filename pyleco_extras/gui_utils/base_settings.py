@@ -32,13 +32,15 @@ class BaseSettings(QtWidgets.QDialog):
             # name of widget, key of setting, defaultValue, type of data
             # (self.widget, "name", 0, int),
         ]
-        self.anyset: list[tuple[
-            Callable[[], Any],  # getter
-            Callable[[Any], None],  # setter
-            str,  # key of setting
-            Any,  # defaultValue
-            type,  # type of data
-            ]] = []
+        self.anyset: list[
+            tuple[
+                Callable[[], Any],  # getter
+                Callable[[Any], None],  # setter
+                str,  # key of setting
+                Any,  # defaultValue
+                type,  # type of data
+            ]
+        ] = []
 
         # Load the user interface file and show it.
         self._setup_ui()
@@ -58,17 +60,16 @@ class BaseSettings(QtWidgets.QDialog):
         # nötig buttonBox zu erstellen?
         self.buttonBox = QtWidgets.QDialogButtonBox()
         self.buttonBox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.StandardButton.Cancel |
-            QtWidgets.QDialogButtonBox.StandardButton.Ok |
-            QtWidgets.QDialogButtonBox.StandardButton.RestoreDefaults
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel
+            | QtWidgets.QDialogButtonBox.StandardButton.Ok
+            | QtWidgets.QDialogButtonBox.StandardButton.RestoreDefaults
         )
         self.formLayout.addRow(self.buttonBox)
 
     def _connect_ui(self) -> None:
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
-        restore = self.buttonBox.button(
-            QtWidgets.QDialogButtonBox.StandardButton.RestoreDefaults)
+        restore = self.buttonBox.button(QtWidgets.QDialogButtonBox.StandardButton.RestoreDefaults)
         restore.clicked.connect(self.restoreDefaults)  # type: ignore
 
     def setup_form(self, layout: QtWidgets.QFormLayout) -> None:
@@ -79,13 +80,13 @@ class BaseSettings(QtWidgets.QDialog):
         raise NotImplementedError
 
     def add_value_widget(
-            self,
-            labelText: Optional[str],
-            widget: VALUE_WIDGETS,
-            key: str,
-            defaultValue: Any = 0,
-            type: Any = float,
-            ) -> None:
+        self,
+        labelText: Optional[str],
+        widget: VALUE_WIDGETS,
+        key: str,
+        defaultValue: Any = 0,
+        type: Any = float,
+    ) -> None:
         """Add a widget which supports value/setValue.
 
         :param labelText: add to the form with this label. Do not add to the form (but to the sets)
@@ -96,15 +97,15 @@ class BaseSettings(QtWidgets.QDialog):
         self.sets.append((widget, key, defaultValue, type))
 
     def add_widget(
-            self,
-            labelText: str,
-            widget: QtWidgets.QWidget,
-            getter: Callable[[], Any],
-            setter: Callable[[Any], None],
-            key: str,
-            defaultValue: Any,
-            type: Any,
-            ) -> None:
+        self,
+        labelText: str,
+        widget: QtWidgets.QWidget,
+        getter: Callable[[], Any],
+        setter: Callable[[Any], None],
+        key: str,
+        defaultValue: Any,
+        type: Any,
+    ) -> None:
         """Add a widget."""
         self.formLayout.addRow(labelText, widget)
         self.anyset.append((getter, setter, key, defaultValue, type))
@@ -126,8 +127,7 @@ class BaseSettings(QtWidgets.QDialog):
     def readValues(self) -> None:
         """Read the stored values and show them on the user interface."""
         for widget, name, value, typ in self.sets:
-            widget.setValue(self.settings.value(name, defaultValue=value,
-                                                type=typ))
+            widget.setValue(self.settings.value(name, defaultValue=value, type=typ))
         for getter, setter, name, value, typ in self.anyset:
             setter(self.settings.value(name, defaultValue=value, type=typ))
         try:

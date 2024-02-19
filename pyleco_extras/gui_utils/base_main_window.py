@@ -1,4 +1,3 @@
-
 import logging
 from pathlib import Path
 from typing import Optional, Union
@@ -33,14 +32,16 @@ class _LECOBaseMainWindow(QtWidgets.QMainWindow):
     actionClose: QtGui.QAction  # type: ignore
     actionSettings: QtGui.QAction  # type: ignore
 
-    def __init__(self,
-                 name: str,
-                 settings_dialog_class: Optional[type[QtWidgets.QDialog]] = None,
-                 host: str = "localhost",
-                 port: int = COORDINATOR_PORT,
-                 logger: logging.Logger = log,
-                 data_port: int = PROXY_SENDING_PORT,
-                 **kwargs) -> None:
+    def __init__(
+        self,
+        name: str,
+        settings_dialog_class: Optional[type[QtWidgets.QDialog]] = None,
+        host: str = "localhost",
+        port: int = COORDINATOR_PORT,
+        logger: logging.Logger = log,
+        data_port: int = PROXY_SENDING_PORT,
+        **kwargs,
+    ) -> None:
         super().__init__(**kwargs)
 
         # Load the user interface file and show it.
@@ -51,16 +52,15 @@ class _LECOBaseMainWindow(QtWidgets.QMainWindow):
             self.settings_dialog_class = settings_dialog_class
 
         # Set the application name
-        if (app := QtCore.QCoreApplication.instance()):
+        if app := QtCore.QCoreApplication.instance():
             app.setOrganizationName("NLOQO")
             app.setApplicationName(name)
 
         # create the listener and the communicator
         self.publisher = DataPublisher(full_name=name, host=host)
-        self.listener = QtListener(name=name,
-                                   host=host, port=port,
-                                   data_port=data_port,
-                                   logger=logger)
+        self.listener = QtListener(
+            name=name, host=host, port=port, data_port=data_port, logger=logger
+        )
         self.listener.signals.message.connect(self.message_received)
         try:
             self.listener.signals.name_changed.connect(self.show_namespace_information)
@@ -111,7 +111,7 @@ class _LECOBaseMainWindow(QtWidgets.QMainWindow):
     def show_namespace_information(self, full_name: str):
         """Show information regarding the namespace."""
         if "." in full_name:
-            namespace = full_name.split('.')[0]
+            namespace = full_name.split(".")[0]
             self.statusBar().showMessage(f"Signed in to namespace '{namespace}'.", 5000)  # type: ignore  # noqa
         else:
             self.statusBar().showMessage("Not signed in.", 5000)  # type: ignore
@@ -126,26 +126,30 @@ class LECOBaseMainWindowDesigner(_LECOBaseMainWindow):
         `pathlib.Path(__file__).parent / "data"`.
     """
 
-    def __init__(self,
-                 name: str,
-                 ui_file_name: str,
-                 ui_file_path: Union[Path, str] = "data",
-                 settings_dialog_class: type[QtWidgets.QDialog] | None = None,
-                 host: str = "localhost",
-                 port: int = COORDINATOR_PORT,
-                 logger: logging.Logger = log,
-                 data_port: int = PROXY_SENDING_PORT,
-                 **kwargs) -> None:
+    def __init__(
+        self,
+        name: str,
+        ui_file_name: str,
+        ui_file_path: Union[Path, str] = "data",
+        settings_dialog_class: type[QtWidgets.QDialog] | None = None,
+        host: str = "localhost",
+        port: int = COORDINATOR_PORT,
+        logger: logging.Logger = log,
+        data_port: int = PROXY_SENDING_PORT,
+        **kwargs,
+    ) -> None:
         if isinstance(ui_file_path, str):
             ui_file_path = Path(ui_file_path)
         self._file_path = ui_file_path / f"{ui_file_name}.ui"
-        super().__init__(name=name,
-                         settings_dialog_class=settings_dialog_class,
-                         host=host,
-                         port=port,
-                         logger=logger,
-                         data_port=data_port,
-                         **kwargs)
+        super().__init__(
+            name=name,
+            settings_dialog_class=settings_dialog_class,
+            host=host,
+            port=port,
+            logger=logger,
+            data_port=data_port,
+            **kwargs,
+        )
 
     def _setup_ui(self):
         uic.load_ui.loadUi(self._file_path, self)
@@ -163,12 +167,15 @@ class LECOBaseMainWindowNoDesigner(_LECOBaseMainWindow):
             app_m.addActions([self.actionSettings, self.actionClose])  # type: ignore
 
 
-def start_app(main_window_class, window_kwargs: dict | None = None,
-              logger: Optional[logging.Logger] = None,
-              **kwargs) -> None:
+def start_app(
+    main_window_class,
+    window_kwargs: dict | None = None,
+    logger: Optional[logging.Logger] = None,
+    **kwargs,
+) -> None:
     """Start a Qt App reading command line parameters."""
     doc = main_window_class.__doc__
-    kwargs.setdefault('parser_description', doc.split(":param", maxsplit=1)[0] if doc else None)
+    kwargs.setdefault("parser_description", doc.split(":param", maxsplit=1)[0] if doc else None)
     parsed_kwargs = parse_command_line_parameters(logger=logger, **kwargs)
     if window_kwargs is None:
         window_kwargs = parsed_kwargs
