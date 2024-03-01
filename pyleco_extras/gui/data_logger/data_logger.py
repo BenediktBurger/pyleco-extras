@@ -14,7 +14,7 @@ import logging
 from typing import Any, Optional
 
 # 3rd party
-from jsonrpcobjects.errors import ServerError
+
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtCore import pyqtSlot
 
@@ -26,6 +26,10 @@ from pyleco_extras.gui_utils.base_main_window import start_app
 from pyleco_extras.gui.data_logger.data_logger_base import DataLoggerBase
 from pyleco_extras.gui.data_logger.data.settings import Settings
 from pyleco_extras.gui.data_logger.data.data_logger_listener import DataLoggerListener
+try:
+    from pyleco.json_utils.errors import ServerError
+except ModuleNotFoundError:
+    from jsonrpcobjects.errors import ServerError
 
 
 nan = float("nan")

@@ -9,7 +9,6 @@ import logging
 from typing import Any
 
 # 3rd party
-from jsonrpcobjects.errors import ServerError
 import pint
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import pyqtSlot
@@ -21,6 +20,10 @@ from pyleco.directors.data_logger_director import DataLoggerDirector
 from pyleco_extras.gui_utils.base_main_window import start_app
 from pyleco_extras.gui.data_logger.data_logger_base import DataLoggerBase
 from pyleco_extras.gui.data_logger.data.settings_remote import Settings
+try:
+    from pyleco.json_utils.errors import ServerError
+except ModuleNotFoundError:
+    from jsonrpcobjects.errors import ServerError
 
 
 log = logging.Logger(__name__)
