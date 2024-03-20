@@ -1,4 +1,3 @@
-
 from inspect import getmembers
 from typing import Generic, Optional, TypeVar, Union
 
@@ -12,27 +11,35 @@ from pyleco.directors.transparent_director import RemoteCall
 Device = TypeVar("Device")
 
 
-def property_creator(name: str,
-                     original_property: property,
-                     ) -> property:
-    """Create a property which gets/sets the remote properties value."""
+def property_creator(
+    name: str,
+    original_property: property,
+) -> property:
+    """Create a property which gets/sets the remote property's value."""
     if original_property.fget is None:
         fget = None
     else:
+
         def getter(self):
             return self.director.get_parameters((name,)).get(name)
+
         fget = getter
     if original_property.fset is None:
         fset = None
     else:
+
         def setter(self, value):
             return self.director.set_parameters({name: value})
+
         fset = setter
     return property(fget, fset, doc=original_property.__doc__)
 
 
-def create_device_copy(device_class: type[Device], director: Director, path: str = "",
-                       ) -> Device:
+def create_device_copy(
+    device_class: type[Device],
+    director: Director,
+    path: str = "",
+) -> Device:
     """Create an instance with the same methods and attributes as the given class.
     This instance, however, calls methods of the `director` instead.
 
@@ -58,15 +65,20 @@ def create_device_copy(device_class: type[Device], director: Director, path: str
         # Channels of pymeasure
         elif isinstance(member, Channel.ChannelCreator):
             channel_class = member.pairs[0][0]
-            setattr(DeviceCopy, name, create_device_copy(device_class=channel_class,
-                                                         director=director,
-                                                         path=path + name))
+            setattr(
+                DeviceCopy,
+                name,
+                create_device_copy(device_class=channel_class, director=director, path=path + name),
+            )
         elif isinstance(member, Channel.MultiChannelCreator):
             prefix = member.kwargs.get("prefix")
             for cls, id in member.pairs:
                 c_name = f"{prefix}{id}"
-                setattr(DeviceCopy, c_name, create_device_copy(cls, director=director,
-                                                               path=path + c_name))
+                setattr(
+                    DeviceCopy,
+                    c_name,
+                    create_device_copy(cls, director=director, path=path + c_name),
+                )
         else:
             # TODO plain attributes (int, str, float, list...) are not found: Combine with
             # TransparentDirector?
@@ -79,14 +91,16 @@ class AnalyzingDirector(Director, Generic[Device]):
     """This Director analyzes an instrument class and behaves like that instrument, but directs
     an Actor, which controls such an instrument.
     """
+
     device: Device
 
-    def __init__(self,
-                 device_class: type[Device],
-                 actor: Optional[Union[bytes, str]] = None,
-                 communicator: Optional[CommunicatorProtocol] = None,
-                 name: str = "Director",
-                 **kwargs):
+    def __init__(
+        self,
+        device_class: type[Device],
+        actor: Optional[Union[bytes, str]] = None,
+        communicator: Optional[CommunicatorProtocol] = None,
+        name: str = "Director",
+        **kwargs,
+    ):
         super().__init__(actor=actor, communicator=communicator, name=name, **kwargs)
-        self.device = create_device_copy(device_class=device_class,
-                                         director=self)
+        self.device = create_device_copy(device_class=device_class, director=self)

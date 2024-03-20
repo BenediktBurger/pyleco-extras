@@ -1,4 +1,3 @@
-
 from unittest.mock import MagicMock
 
 import pytest
@@ -7,8 +6,11 @@ from pymeasure.instruments import Instrument, Channel
 from pyleco.core.message import Message, MessageTypes
 from pyleco.test import FakeCommunicator
 
-from pyleco_extras.directors.analyzing_director import (create_device_copy, AnalyzingDirector,
-                                                        RemoteCall)
+from pyleco_extras.directors.analyzing_director import (
+    create_device_copy,
+    AnalyzingDirector,
+    RemoteCall,
+)
 
 
 cid = b"conversation_id;"
@@ -31,7 +33,6 @@ class ExampleChannel(Channel):
 
 
 class ExampleInstrument:
-
     channel = Instrument.ChannelCreator(cls=ExampleChannel, id=1)
 
     mchannels = Instrument.MultiChannelCreator(cls=ExampleChannel, id=(2, 3))
@@ -66,8 +67,7 @@ class FakeDirector:
 
 @pytest.fixture
 def instrument_cls():
-    cls = create_device_copy(ExampleInstrument,
-                             director=None)  # type: ignore
+    cls = create_device_copy(ExampleInstrument, director=None)  # type: ignore
     return cls.__class__
 
 
@@ -114,7 +114,7 @@ class TestSetter:
 
     def test_set_parameters(self, fake_director: FakeDirector):
         fake_director.device.set_property = 5
-        fake_director.set_parameters.assert_called_once_with({'set_property': 5})
+        fake_director.set_parameters.assert_called_once_with({"set_property": 5})
 
 
 class TestController:
@@ -160,11 +160,11 @@ class TestChannelProperty:
 
     def test_set_property(self, fake_director: FakeDirector):
         fake_director.device.channel.channel_property = 7  # type: ignore
-        fake_director.set_parameters.assert_called_once_with({'channel.channel_property': 7})
+        fake_director.set_parameters.assert_called_once_with({"channel.channel_property": 7})
 
     def test_set_property_of_multiCreator(self, fake_director: FakeDirector):
         fake_director.device.ch_2.channel_property = 9  # type: ignore
-        fake_director.set_parameters.assert_called_once_with({'ch_2.channel_property': 9})
+        fake_director.set_parameters.assert_called_once_with({"ch_2.channel_property": 9})
 
     def test_method(self, fake_director: FakeDirector):
         fake_director.device.channel.channel_method(5, kwarg=7)  # type: ignore
@@ -176,22 +176,37 @@ class TestAnalyzingDirectorInit:
     def director(self, monkeypatch):
         def fake_generate_conversation_id():
             return cid
-        monkeypatch.setattr("pyleco.core.serialization.generate_conversation_id",
-                            fake_generate_conversation_id)
-        return AnalyzingDirector(device_class=ExampleInstrument,
-                                 actor="Actor",
-                                 communicator=FakeCommunicator("Director"))
+
+        monkeypatch.setattr(
+            "pyleco.core.serialization.generate_conversation_id", fake_generate_conversation_id
+        )
+        return AnalyzingDirector(
+            device_class=ExampleInstrument, actor="Actor", communicator=FakeCommunicator("Director")
+        )
 
     def test_device_with_property(self, director: AnalyzingDirector):
         director.communicator._r = [  # type: ignore
-            Message("Director", "Actor", message_type=MessageTypes.JSON, conversation_id=cid, data={
-                "jsonrpc": "2.0", "id": 1, "result": {'get_property': 5}
-            })]
+            Message(
+                "Director",
+                "Actor",
+                message_type=MessageTypes.JSON,
+                conversation_id=cid,
+                data={"jsonrpc": "2.0", "id": 1, "result": {"get_property": 5}},
+            )
+        ]
         result = director.device.get_property  # type: ignore
         assert director.communicator._s == [  # type: ignore
-            Message("Actor", "Director", message_type=MessageTypes.JSON, conversation_id=cid, data={
-                "jsonrpc": "2.0", "method": "get_parameters",
-                "params": {'parameters': ('get_property',)}, "id": 1,
-            })
+            Message(
+                "Actor",
+                "Director",
+                message_type=MessageTypes.JSON,
+                conversation_id=cid,
+                data={
+                    "jsonrpc": "2.0",
+                    "method": "get_parameters",
+                    "params": {"parameters": ("get_property",)},
+                    "id": 1,
+                },
+            )
         ]
         assert result == 5
