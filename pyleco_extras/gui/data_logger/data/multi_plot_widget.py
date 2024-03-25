@@ -5,9 +5,10 @@ Plot window of the Datalogger.
 Created on Fri Jul  9 14:32:56 2021 by Benedikt Burger.
 """
 
-from typing import Any
+import logging
+from typing import Any, Optional
 
-from qtpy import QtWidgets, QtGui
+from qtpy import QtCore, QtWidgets, QtGui
 from qtpy.QtCore import Slot as pyqtSlot, Qt  # type: ignore
 
 import pyqtgraph as pg
@@ -26,15 +27,21 @@ class MultiPlotWidget(PlotGroupWidget):
     :param logger log: Parent logger to handle log entries. Creates the child 'PlotMulti'.
     """
 
-    def __init__(self, parent: DataLoggerGuiProtocol, autoCut=0, grid=False, log=None,
-                 **kwargs) -> None:
+    def __init__(
+        self,
+        parent: DataLoggerGuiProtocol,
+        autoCut: int = 0,
+        grid: bool = False,
+        log: Optional[logging.Logger] = None,
+        **kwargs,
+    ) -> None:
         self.model = QtGui.QStandardItemModel()
         self.model.setHorizontalHeaderLabels(["pen", "key"])
         self.model.dataChanged.connect(self.lineConfigurationChanged)
-        self.lines = {}  # The lines themselves. key: line
-        self.pens = {}  # Pen names for restoring them. key: pen name
-        self.legend_entries = {}  # lines for the legend. key: legend line
-        self.references = {}  # key: axis index
+        self.lines: dict[str, pg.PlotDataItem] = {}  # The lines themselves. key: line
+        self.pens: dict[str, str] = {}  # Pen names for restoring them. key: pen name
+        self.legend_entries: dict[str, pg.PlotDataItem] = {}  # key: line for legend
+        self.references: dict[str, int] = {}  # key: axis index
 
         super().__init__(parent=parent, autoCut=autoCut, grid=grid, log=log, **kwargs)
 
@@ -276,7 +283,7 @@ class MultiPlotWidget(PlotGroupWidget):
         else:
             self.lines[key] = self.plotWidget.plot([], [], name=key, pen=pen)
 
-    def _removeLine(self, key):
+    def _removeLine(self, key: str) -> None:
         """Remove a line from the plot."""
         if key in self.legend_entries:
             self.axes[self.references[key]].removeItem(self.lines[key])  # type: ignore
@@ -288,13 +295,15 @@ class MultiPlotWidget(PlotGroupWidget):
         del self.lines[key]
         del self.pens[key]
 
-    def showValues(self, current, previous=None):
+    def showValues(
+        self, current: QtCore.QModelIndex, previous: Optional[QtCore.QModelIndex] = None
+    ) -> None:
         """Show the values of the selected key."""
-        if self.pbOptions.isChecked():
+        if self.pbLines.isChecked():
             self.keys[1] = self.model.item(current.row(), 1).data(Qt.ItemDataRole.DisplayRole)
             self._last_index = current
 
-    def _adjustView(self):
+    def _adjustView(self) -> None:
         """Adjust the table view to the content."""
         self.tvLines.resizeColumnsToContents()
 
