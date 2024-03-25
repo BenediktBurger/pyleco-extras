@@ -62,17 +62,26 @@ class MultiPlotWidget(PlotGroupWidget):
 
     def _setup_ui(self):
         super()._setup_ui()
-        for action in (self.actionlg, self.actionly, self.actionv, self.action_show_lines,
-                       self.actionvls, self.actionEvaluate, self.action_show_toolbar):
+        for action in (
+            self.actionlg,
+            self.actionly,
+            self.actionv,
+            self.action_show_lines,
+            self.actionvls,
+            self.actionEvaluate,
+            self.action_show_toolbar,
+        ):
             self.toolbar.addAction(action)
             self.menu.addAction(action)
         self.tvLines = QtWidgets.QTableView()
-        self.tvLines.setToolTip('<html><head/><body><p>Select the color of the key to show. Either '
-                                'as a name or as RGB.</p><p>Prefix &quot;n,&quot; to show it to '
-                                'the n<span style=" vertical-align:super;">th</span> right axis.'
-                                '</p><p>Only the main axis and the first right axis get plot '
-                                'transforms and &quot;view all&quot; via the &quot;A&quot; button.'
-                                '</p></body></html>')
+        self.tvLines.setToolTip(
+            "<html><head/><body><p>Select the color of the key to show. Either "
+            "as a name or as RGB.</p><p>Prefix &quot;n,&quot; to show it to "
+            'the n<span style=" vertical-align:super;">th</span> right axis.'
+            "</p><p>Only the main axis and the first right axis get plot "
+            "transforms and &quot;view all&quot; via the &quot;A&quot; button."
+            "</p></body></html>"
+        )
         self.tvLines.setSelectionMode(QtWidgets.QTableView.SelectionMode.SingleSelection)
         self.tvLines.verticalHeader().setVisible(False)
         self.pbAutoRange = QtWidgets.QToolButton()
@@ -100,8 +109,15 @@ class MultiPlotWidget(PlotGroupWidget):
         button_box = QtWidgets.QHBoxLayout()
         button_box.setSpacing(1)
         button_box.setContentsMargins(0, 0, 0, 0)
-        for widget in (self.pbOptions, self.pbAutoRange, self.pbLines, self.bbX, self.sbAutoCut,
-                       self.lbValue, self.lbEvaluation,):
+        for widget in (
+            self.pbOptions,
+            self.pbAutoRange,
+            self.pbLines,
+            self.bbX,
+            self.sbAutoCut,
+            self.lbValue,
+            self.lbEvaluation,
+        ):
             button_box.addWidget(widget)
         button_box.setStretchFactor(self.bbX, 1)
         button_box.setStretchFactor(self.lbValue, 3)
@@ -117,8 +133,9 @@ class MultiPlotWidget(PlotGroupWidget):
     def setup_plot(self):
         """Configure the plot."""
         super().setup_plot()
-        self.plotWidget.addLegend(brush=(255, 255, 255, 64), labelTextColor=.9,
-                                  horSpacing=20, verSpacing=-10)
+        self.plotWidget.addLegend(
+            brush=(255, 255, 255, 64), labelTextColor=0.9, horSpacing=20, verSpacing=-10
+        )
         plotItem = self.plotWidget.plotItem
         self.axes: list[pg.PlotItem] = [plotItem]
         plotItem.vb.sigResized.connect(self._updateViews)  # type: ignore
@@ -166,10 +183,12 @@ class MultiPlotWidget(PlotGroupWidget):
     def get_configuration(self) -> dict[str, Any]:
         """Get the current plot configuration."""
         configuration = super().get_configuration()
-        configuration.update({
-            "lines": self.get_lines(),
-            "y_key": self.keys[1],
-        })
+        configuration.update(
+            {
+                "lines": self.get_lines(),
+                "y_key": self.keys[1],
+            }
+        )
         return configuration
 
     def restore_configuration(self, configuration: dict[str, Any]) -> None:
@@ -189,20 +208,20 @@ class MultiPlotWidget(PlotGroupWidget):
         """Update the plots."""
         x_key, y_key = self.keys
         try:
-            if x_key == 'index':
+            if x_key == "index":
                 for key, line in self.lines.items():
-                    line.setData(
-                        self.main_window.lists[key][-self.autoCut:])
+                    line.setData(self.main_window.lists[key][-self.autoCut:])
             else:
                 for key, line in self.lines.items():
                     line.setData(
                         self.main_window.lists[x_key][-self.autoCut:],
-                        self.main_window.lists[key][-self.autoCut:])
+                        self.main_window.lists[key][-self.autoCut:],
+                    )
         except KeyError:
             return  # no data
         try:
             value = self.main_window.lists[y_key][-1]
-            units = self.main_window.current_units.get(y_key, '')
+            units = self.main_window.current_units.get(y_key, "")
             self.lbValue.setText(f"{y_key}: {value:.8g} {units}")
         except (IndexError, KeyError, TypeError):
             pass  # no data
@@ -277,9 +296,7 @@ class MultiPlotWidget(PlotGroupWidget):
             self.lines[key] = line
             self.axes[axis].addItem(line)  # type: ignore
             self.references[key] = axis
-            self.legend_entries[key] = self.plotWidget.plot([], [],
-                                                            name=f"{axis}: {key}",
-                                                            pen=pen)
+            self.legend_entries[key] = self.plotWidget.plot([], [], name=f"{axis}: {key}", pen=pen)
         else:
             self.lines[key] = self.plotWidget.plot([], [], name=key, pen=pen)
 

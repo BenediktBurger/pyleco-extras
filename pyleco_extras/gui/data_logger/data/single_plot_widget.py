@@ -5,7 +5,8 @@ Plot window of the Datalogger.
 Created on Fri Jul  9 14:32:56 2021 by Benedikt Burger.
 """
 
-from typing import Any
+import logging
+from typing import Any, Optional
 
 import numpy as np
 import pyqtgraph as pg
@@ -24,7 +25,14 @@ class SinglePlotWidget(PlotGroupWidget):
     :param logger log: Parent logger to handle log entries. Creates the child 'Plot'.
     """
 
-    def __init__(self, parent: DataLoggerGuiProtocol, autoCut=0, grid=False, log=None, **kwargs):
+    def __init__(
+        self,
+        parent: DataLoggerGuiProtocol,
+        autoCut: int = 0,
+        grid: bool = False,
+        log: Optional[logging.Logger] = None,
+        **kwargs,
+    ):
         super().__init__(parent=parent, autoCut=autoCut, grid=grid, log=log, **kwargs)
 
         self.log.info("Plot created.")
@@ -49,11 +57,19 @@ class SinglePlotWidget(PlotGroupWidget):
         self.actionmm.toggled.connect(self.toggleMM)
         self.actionlmm.toggled.connect(self.toggleLMM)
 
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         super()._setup_ui()
-        for action in (self.actionDots, self.actionly, self.actionlg, self.actionmm,
-                       self.actionlmm, self.actionv, self.actionvls, self.actionEvaluate,
-                       self.action_show_toolbar):
+        for action in (
+            self.actionDots,
+            self.actionly,
+            self.actionlg,
+            self.actionmm,
+            self.actionlmm,
+            self.actionv,
+            self.actionvls,
+            self.actionEvaluate,
+            self.action_show_toolbar,
+        ):
             self.toolbar.addAction(action)
             self.menu.addAction(action)
         self.bbY = QtWidgets.QComboBox()
@@ -63,12 +79,18 @@ class SinglePlotWidget(PlotGroupWidget):
         # # Connect widgets to slots
         self.bbY.activated.connect(self.setY)
 
-    def _layout(self):
+    def _layout(self) -> None:
         button_box = QtWidgets.QHBoxLayout()
         button_box.setSpacing(2)
         button_box.setContentsMargins(0, 0, 0, 0)
-        for widget in (self.pbOptions, self.bbY, self.bbX, self.sbAutoCut, self.lbValue,
-                       self.lbEvaluation):
+        for widget in (
+            self.pbOptions,
+            self.bbY,
+            self.bbX,
+            self.sbAutoCut,
+            self.lbValue,
+            self.lbEvaluation,
+        ):
             button_box.addWidget(widget)
         button_box.setStretchFactor(self.bbY, 1)
         button_box.setStretchFactor(self.bbX, 1)
@@ -82,21 +104,23 @@ class SinglePlotWidget(PlotGroupWidget):
         vbox.addLayout(button_box)
         self.setLayout(vbox)
 
-    def setup_plot(self):
+    def setup_plot(self) -> None:
         """Configure the plot."""
         super().setup_plot()
-        self.reference = self.plotWidget.plot([], [])
-        self.plotWidget.setLabel('left', "None")
+        self.reference: pg.PlotDataItem = self.plotWidget.plot([], [])
+        self.plotWidget.setLabel("left", "None")
 
     def get_configuration(self) -> dict[str, Any]:
         """Get the current plot configuration."""
         configuration = super().get_configuration()
-        configuration.update({
-            "y_key": self.bbY.currentText(),
-            "dots": self.actionDots.isChecked(),
-            "lmm": self.actionlmm.isChecked(),
-            "mm": self.actionmm.isChecked(),
-        })
+        configuration.update(
+            {
+                "y_key": self.bbY.currentText(),
+                "dots": self.actionDots.isChecked(),
+                "lmm": self.actionlmm.isChecked(),
+                "mm": self.actionmm.isChecked(),
+            }
+        )
         return configuration
 
     def restore_configuration(self, configuration: dict[str, Any]) -> None:
@@ -113,17 +137,17 @@ class SinglePlotWidget(PlotGroupWidget):
         self.setY()
 
     @pyqtSlot()
-    def update(self):
+    def update(self) -> None:
         """Update the plots."""
         x_key, y_key = self.keys
         try:
-            if x_key == 'index':
-                self.reference.setData(
-                    self.main_window.lists[y_key][-self.autoCut:])
+            if x_key == "index":
+                self.reference.setData(self.main_window.lists[y_key][-self.autoCut:])
             else:
                 self.reference.setData(
                     self.main_window.lists[x_key][-self.autoCut:],
-                    self.main_window.lists[y_key][-self.autoCut:])
+                    self.main_window.lists[y_key][-self.autoCut:],
+                )
             if self.actionmm.isChecked():
                 l1, l2 = self.linesMM
                 l1.setValue(np.nanmin(self.main_window.lists[y_key]))
@@ -147,23 +171,23 @@ class SinglePlotWidget(PlotGroupWidget):
         if self.actionEvaluate.isChecked():
             self.evaluate_data()
 
-    def clear_plot(self):
+    def clear_plot(self) -> None:
         """Clear the plot area to reduce memory."""
         self.reference.setData([])
 
     @pyqtSlot(bool)
-    def setStyle(self, checked: bool):
+    def setStyle(self, checked: bool) -> None:
         """Set the current plot style."""
         if checked:
             self.reference.setPen(None)
             self.reference.setSymbol("o")
             self.reference.setSymbolSize(5)
         else:
-            self.reference.setPen(.9)
+            self.reference.setPen(0.9)
             self.reference.setSymbol(None)
 
     @pyqtSlot(bool)
-    def toggleMM(self, checked: bool):
+    def toggleMM(self, checked: bool) -> None:
         """Add lines for global min and max."""
         if checked:
             pen = pg.mkPen("red", style=Qt.PenStyle.DashLine)
@@ -175,7 +199,7 @@ class SinglePlotWidget(PlotGroupWidget):
                 self.plotWidget.removeItem(line)
 
     @pyqtSlot(bool)
-    def toggleLMM(self, checked: bool):
+    def toggleLMM(self, checked: bool) -> None:
         """Add lines for global min and max."""
         if checked:
             pen = pg.mkPen("orange", style=Qt.PenStyle.DashLine)
@@ -186,14 +210,14 @@ class SinglePlotWidget(PlotGroupWidget):
             for line in self.linesLMM:
                 self.plotWidget.removeItem(line)
 
-    def getYkeys(self):
+    def getYkeys(self) -> None:
         """Get the available keys for the y axis."""
         self.setKeyNames(self.bbY)
 
     @pyqtSlot()
-    def setY(self):
+    def setY(self) -> None:
         """Adjust the current y label."""
         text = self.bbY.currentText()
         self.keys[1] = text
-        self.plotWidget.setLabel('left', text=self.generate_axis_label(text))
+        self.plotWidget.setLabel("left", text=self.generate_axis_label(text))
         self.update()

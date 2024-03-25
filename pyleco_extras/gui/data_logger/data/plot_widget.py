@@ -6,7 +6,7 @@ Created on Fri Jul  9 14:32:56 2021 by Benedikt Burger.
 
 import logging
 import math
-from typing import Any, Protocol
+from typing import Any, Protocol, Optional
 
 import numpy as np
 import pint
@@ -24,7 +24,14 @@ class DataLoggerGuiProtocol(Protocol):
 class PlotGroupWidget(QtWidgets.QWidget):
     """Abstract class for the plot widgets."""
 
-    def __init__(self, parent: DataLoggerGuiProtocol, autoCut=0, grid=False, log=None, **kwargs):
+    def __init__(
+        self,
+        parent: DataLoggerGuiProtocol,
+        autoCut: int = 0,
+        grid: bool = False,
+        log: Optional[logging.Logger] = None,
+        **kwargs,
+    ):
         super().__init__()
         self._setup_actions()
         self._setup_ui()
@@ -105,7 +112,9 @@ class PlotGroupWidget(QtWidgets.QWidget):
         self.sbAutoCut.setToolTip("Show the last number of values. If 0, show all values.")
         self.lbValue = QtWidgets.QLabel("last value")
         self.lbValue.setToolTip("Last value of the current axis.")
-        self.lbValue.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)  # noqa
+        self.lbValue.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )  # noqa
 
         self.lbEvaluation = QtWidgets.QLabel("-")
         self.lbEvaluation.setToolTip("Mean and standard deviation of the value in the limits.")
@@ -121,11 +130,11 @@ class PlotGroupWidget(QtWidgets.QWidget):
         """Organize the elements into a layout."""
         raise NotImplementedError
 
-    def setup_plot(self):
+    def setup_plot(self) -> None:
         """Configure the plotting area."""
-        self.plotWidget.setLabel('bottom', "index")
+        self.plotWidget.setLabel("bottom", "index")
 
-    def closeEvent(self, event):
+    def closeEvent(self, event) -> None:
         """Close the plot."""
         try:
             self.main_window.timer.timeout.disconnect(self.update)
@@ -143,7 +152,9 @@ class PlotGroupWidget(QtWidgets.QWidget):
             "autoCut": self.autoCut,
             "ly": self.lineY.value() if self.actionly.isChecked() else False,
             "lg": self.lineG.value() if self.actionlg.isChecked() else False,
-            "vls": (self.lineV1.value(), self.lineV2.value()) if self.actionvls.isChecked() else False,  # noqa
+            "vls": (self.lineV1.value(), self.lineV2.value())
+            if self.actionvls.isChecked()
+            else False,  # noqa
             "evaluation": self.actionEvaluate.isChecked(),
         }
         return configuration
@@ -170,15 +181,15 @@ class PlotGroupWidget(QtWidgets.QWidget):
                 self.actionEvaluate.setChecked(value)
 
     @pyqtSlot()
-    def update(self):
+    def update(self) -> None:
         """Update the plots."""
         raise NotImplementedError
 
-    def clear_plot(self):
+    def clear_plot(self) -> None:
         """Clear the plots."""
         raise NotImplementedError
 
-    def show_menu(self):
+    def show_menu(self) -> None:
         self.menu.popup(self.pbOptions.mapToGlobal(QtCore.QPoint(0, 0)))
 
     def generate_axis_label(self, key: str) -> str:
@@ -193,16 +204,16 @@ class PlotGroupWidget(QtWidgets.QWidget):
         else:
             return f"{key} ({units})"
 
-    def setKeyNames(self, comboBox):
+    def setKeyNames(self, comboBox: QtWidgets.QComboBox) -> None:
         """Set the names for the `comboBox`."""
         current = comboBox.currentText()
         comboBox.clear()
         if comboBox == self.bbX:
-            comboBox.addItem('index')
+            comboBox.addItem("index")
         comboBox.addItems(self.main_window.lists.keys())
         comboBox.setCurrentText(current)
 
-    def getXkeys(self):
+    def getXkeys(self) -> None:
         """Get the available keys for the x axis."""
         self.setKeyNames(self.bbX)
 
@@ -211,15 +222,15 @@ class PlotGroupWidget(QtWidgets.QWidget):
         """Adjust the current x label."""
         text = self.bbX.currentText()
         self.keys[0] = text
-        self.plotWidget.setLabel('bottom', text=self.generate_axis_label(text))
+        self.plotWidget.setLabel("bottom", text=self.generate_axis_label(text))
         self.update()
 
-    def getYkeys(self):
+    def getYkeys(self) -> None:
         """Get the available keys for the y axis."""
         raise NotImplementedError()
 
     @pyqtSlot(int)
-    def setAutoCut(self, value) -> None:
+    def setAutoCut(self, value: int) -> None:
         """Set the current auto cut value."""
         self.autoCut = value
 
@@ -231,13 +242,15 @@ class PlotGroupWidget(QtWidgets.QWidget):
 
     # Action slots
     @pyqtSlot(bool)
-    def toggleLineY(self, checked, start: float = 0) -> None:
+    def toggleLineY(self, checked: bool, start: float = 0) -> None:
         """Toggle to show a horizontal line."""
         try:
             self.lineY.setVisible(checked)
         except AttributeError:
             if checked:
-                self.lineY = self.plotWidget.addLine(y=start, pen='y', movable=True)
+                self.lineY: pg.InfiniteLine = self.plotWidget.addLine(
+                    y=start, pen="y", movable=True
+                )
 
     @pyqtSlot(bool)
     def toggleLineG(self, checked: bool, start: float = 0) -> None:
@@ -246,7 +259,9 @@ class PlotGroupWidget(QtWidgets.QWidget):
             self.lineG.setVisible(checked)
         except AttributeError:
             if checked:
-                self.lineG = self.plotWidget.addLine(y=start, pen='g', movable=True)
+                self.lineG: pg.InfiniteLine = self.plotWidget.addLine(
+                    y=start, pen="g", movable=True
+                )
 
     @pyqtSlot(bool)
     def toggleVerticalLines(self, checked: bool, l1: float = 0, l2: float = 1) -> None:
@@ -255,9 +270,9 @@ class PlotGroupWidget(QtWidgets.QWidget):
             self.lineV2.setVisible(checked)
         except AttributeError:
             if checked:
-                self.lineV1 = self.plotWidget.addLine(x=l1, pen="y", movable=True)
+                self.lineV1: pg.InfiniteLine = self.plotWidget.addLine(x=l1, pen="y", movable=True)
                 self.lineV1.sigDragged.connect(self.evaluate_data)
-                self.lineV2 = self.plotWidget.addLine(x=l2, pen="y", movable=True)
+                self.lineV2: pg.InfiniteLine = self.plotWidget.addLine(x=l2, pen="y", movable=True)
                 self.lineV2.sigDragged.connect(self.evaluate_data)
 
     @pyqtSlot(bool)
@@ -273,8 +288,8 @@ class PlotGroupWidget(QtWidgets.QWidget):
     def evaluate_data(self, value: int = 0) -> None:
         x_key, y_key = self.keys
         if self.actionvls.isChecked():
-            l1 = self.lineV1.value()
-            l2 = self.lineV2.value()
+            l1: int = self.lineV1.value()  # type: ignore
+            l2: int = self.lineV2.value()  # type: ignore
             l1, l2 = sorted((l1, l2))
             if x_key == "index":
                 raw_data = self.main_window.lists[y_key][-self.autoCut:]
