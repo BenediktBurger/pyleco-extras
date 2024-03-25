@@ -6,6 +6,10 @@
 
 - **Breaking:** rename `MotorController` to `TMCMotorActor` and `MotorDirector` to `TMCMotorDirector`
 
+### Fixed
+
+- Fix DataLogger multiplot window to show value.
+
 
 ## [0.1.0] 2024-02-02
 
