@@ -201,7 +201,7 @@ class MultiPlotWidget(PlotGroupWidget):
             self.set_lines(lines)
             self.show_line_settings(False)
         else:
-            self.pbOptions.setChecked(True)
+            self.pbLines.setChecked(True)
 
     @pyqtSlot()
     def update(self):
