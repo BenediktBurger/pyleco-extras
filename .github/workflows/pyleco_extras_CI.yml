@@ -96,6 +96,8 @@ jobs:
           cache-downloads: false
       - name: Python version
         run: python --version
+      - name: Install pyleco extras
+        run: pip install -e .
       - name: Install mypy
         run: pip install mypy
       - name: Run mypy

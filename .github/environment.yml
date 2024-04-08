@@ -9,7 +9,7 @@ dependencies:
     - jsonrpc2-pyclient==4.3.0
     - openrpc==8.1.0
     - uuid7==0.1.0
-    - pyleco==0.2.2
+    - pyleco==0.3
     - PyTrinamic>=0.2
     - PyQt6
     - qtpy
