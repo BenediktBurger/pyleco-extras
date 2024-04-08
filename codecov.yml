@@ -1,0 +1,8 @@
+coverage:
+  status:
+    project: off
+      default:
+        # basic
+        target: auto
+        threshold: 0.1%  # allows a small drop of coverage for flaky tests
+    patch: off
