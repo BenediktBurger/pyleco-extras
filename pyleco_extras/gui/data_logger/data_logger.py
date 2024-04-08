@@ -126,7 +126,7 @@ class DataLoggerGUI(DataLoggerBase):
         """
         # Preparation.
         self.leSavedName.setText("Saving...")
-        self.statusBar().showMessage("Saving...")
+        self.statusBar().showMessage("Saving...")  # type: ignore
         settings = QtCore.QSettings()
         folder = settings.value("savePath", type=str)
         self.listener.message_handler.directory = folder
@@ -144,13 +144,13 @@ class DataLoggerGUI(DataLoggerBase):
         except Exception as exc:
             log.exception("Some type error during saving occurred.", exc_info=exc)
             self.leSavedName.setText("Error")
-            self.statusBar().showMessage(f"Writing failed due to Error. {exc}", 5000)
+            self.statusBar().showMessage(f"Writing failed due to Error. {exc}", 5000)  # type: ignore
             raise
         else:
             # Indicate the name.
             log.info(f"Saved data to '{folder}/{file_name}'.")
             self.leSavedName.setText(file_name)
-            self.statusBar().showMessage(f"Saved data to '{folder}/{file_name}'.", 5000)
+            self.statusBar().showMessage(f"Saved data to '{folder}/{file_name}'.", 5000)  # type: ignore
             return file_name
 
     @pyqtSlot()
@@ -175,7 +175,7 @@ class DataLoggerGUI(DataLoggerBase):
                 value_repeating=self.value_repeating,
             )
         except ServerError as exc:
-            self.statusBar().showMessage(f"Communication error: {exc.rpc_error.message}", 3000)
+            self.statusBar().showMessage(f"Communication error: {exc.rpc_error.message}", 3000)  # type: ignore
         except (ConnectionError, TimeoutError) as exc:
             log.exception("set property communication error", exc_info=exc)
 
@@ -183,7 +183,7 @@ class DataLoggerGUI(DataLoggerBase):
         self.current_units = self.units
 
         # Clear the interface.
-        self.statusBar().clearMessage()
+        self.statusBar().clearMessage()  # type: ignore
         self.lbCount.setText("Data points: 0")
         self.signals.started.emit()
         self.tabWidget.setCurrentIndex(1)

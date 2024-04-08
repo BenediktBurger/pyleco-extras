@@ -55,7 +55,7 @@ class DataLoggerRemote(DataLoggerBase):
         self.listener.signals.data_message.connect(self.handle_data_message)
 
         self.lbRemoteCount = QtWidgets.QLabel()
-        self.statusBar().addWidget(self.lbRemoteCount)
+        self.statusBar().addWidget(self.lbRemoteCount)  # type: ignore
         self.lbRemoteCount.show()
         self.actionReset = QtGui.QAction(
             "Reset local storage",
@@ -95,17 +95,12 @@ class DataLoggerRemote(DataLoggerBase):
         self.leHeader.textChanged.connect(self.set_header)
         self.leVariables.textEdited.connect(self.set_variables)
 
-    def setup_lists(self):
-        super().setup_lists()
-        self.lists = {}
-        self.units = {}
-
     def read_configuration(self) -> dict[str, Any]:
         try:
             config = self.communicator.ask_rpc(receiver=self.remote, method="get_configuration")
             length = self.communicator.ask_rpc(receiver=self.remote, method="get_list_length")
         except ServerError as exc:
-            self.statusBar().showMessage(f"Communication error: {exc.rpc_error.message}", 10000)
+            self.statusBar().showMessage(f"Communication error: {exc.rpc_error.message}", 10000)  # type: ignore
             return {}
         except Exception as exc:
             log.exception("Getting configuration failed.", exc_info=exc)
@@ -126,7 +121,7 @@ class DataLoggerRemote(DataLoggerBase):
                 receiver=self.remote, method="set_configuration", configuration=properties
             )
         except ServerError as exc:
-            self.statusBar().showMessage(f"Communication error: {exc.rpc_error.message}", 3000)
+            self.statusBar().showMessage(f"Communication error: {exc.rpc_error.message}", 3000)  # type: ignore
         except (ConnectionError, TimeoutError) as exc:
             log.exception("set property communication error", exc_info=exc)
 
@@ -211,7 +206,7 @@ class DataLoggerRemote(DataLoggerBase):
         try:
             value = self.director.save_data()
         except ServerError as exc:
-            self.statusBar().showMessage(f"Communication error: {exc.rpc_error.message}", 3000)
+            self.statusBar().showMessage(f"Communication error: {exc.rpc_error.message}", 3000)  # type: ignore
         except Exception as exc:
             log.exception("saveDataClicked", exc_info=exc)
         else:

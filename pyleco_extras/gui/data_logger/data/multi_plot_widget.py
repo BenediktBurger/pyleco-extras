@@ -47,7 +47,7 @@ class MultiPlotWidget(PlotGroupWidget):
 
         self.tvLines.setModel(self.model)
         self._adjustView()
-        sm = self.tvLines.selectionModel()  # selection model
+        sm: QtCore.QItemSelectionModel = self.tvLines.selectionModel()  # type: ignore
         sm.currentChanged.connect(self.showValues)
 
         self.log.info("MultiPlot created.")
@@ -83,7 +83,7 @@ class MultiPlotWidget(PlotGroupWidget):
             "</p></body></html>"
         )
         self.tvLines.setSelectionMode(QtWidgets.QTableView.SelectionMode.SingleSelection)
-        self.tvLines.verticalHeader().setVisible(False)
+        self.tvLines.verticalHeader().setVisible(False)  # type: ignore
         self.pbAutoRange = QtWidgets.QToolButton()
         self.pbAutoRange.setText("A")
         self.pbAutoRange.setToolTip("Set all axes to auto Y range (Ctrl + A).")
@@ -168,17 +168,17 @@ class MultiPlotWidget(PlotGroupWidget):
         """Get all lines currently defined."""
         lines = {}
         for i in range(self.model.rowCount()):
-            key = self.model.item(i, 1).data(Qt.ItemDataRole.DisplayRole)
-            pen_color = self.model.item(i, 0).data(Qt.ItemDataRole.DisplayRole)
+            key = self.model.item(i, 1).data(Qt.ItemDataRole.DisplayRole)  # type: ignore
+            pen_color = self.model.item(i, 0).data(Qt.ItemDataRole.DisplayRole)  # type: ignore
             lines[key] = pen_color
         return lines
 
     def set_lines(self, lines: dict[str, str]) -> None:
         """Set the lines definitions."""
         for i in range(self.model.rowCount()):
-            key = self.model.item(i, 1).data(Qt.ItemDataRole.DisplayRole)
+            key = self.model.item(i, 1).data(Qt.ItemDataRole.DisplayRole)  # type: ignore
             pen_color = lines.get(key, "")
-            self.model.item(i, 0).setData(pen_color, Qt.ItemDataRole.DisplayRole)
+            self.model.item(i, 0).setData(pen_color, Qt.ItemDataRole.DisplayRole)  # type: ignore
 
     def get_configuration(self) -> dict[str, Any]:
         """Get the current plot configuration."""
@@ -262,14 +262,14 @@ class MultiPlotWidget(PlotGroupWidget):
 
     def lineConfigurationChanged(self, topLeft, bottomRight, roles):
         """Create/update lines according to changed data"""
-        key = self.model.itemFromIndex(topLeft.siblingAtColumn(1)).data(Qt.ItemDataRole.DisplayRole)
-        pen_color = self.model.itemFromIndex(topLeft).data(Qt.ItemDataRole.DisplayRole)
+        key = self.model.itemFromIndex(topLeft.siblingAtColumn(1)).data(Qt.ItemDataRole.DisplayRole)  # type: ignore
+        pen_color = self.model.itemFromIndex(topLeft).data(Qt.ItemDataRole.DisplayRole)  # type: ignore
         if pen_color:
             parts = pen_color.split(",")
             try:
                 pen = pg.mkPen(parts.pop())
             except ValueError:
-                self.model.itemFromIndex(topLeft).setData("", Qt.ItemDataRole.DisplayRole)
+                self.model.itemFromIndex(topLeft).setData("", Qt.ItemDataRole.DisplayRole)  # type: ignore
                 return
             self.pens[key] = pen_color
             axis = int(parts[0]) if parts else 0
@@ -317,7 +317,7 @@ class MultiPlotWidget(PlotGroupWidget):
     ) -> None:
         """Show the values of the selected key."""
         if self.pbLines.isChecked():
-            self.keys[1] = self.model.item(current.row(), 1).data(Qt.ItemDataRole.DisplayRole)
+            self.keys[1] = self.model.item(current.row(), 1).data(Qt.ItemDataRole.DisplayRole)  # type: ignore
             self._last_index = current
 
     def _adjustView(self) -> None:
@@ -336,7 +336,7 @@ class MultiPlotWidget(PlotGroupWidget):
                 self.log.exception("Adjusting the view for showing the data failed.", exc_info=exc)
                 return
             try:
-                sm = self.tvLines.selectionModel()
+                sm: QtCore.QItemSelectionModel = self.tvLines.selectionModel()  # type: ignore
                 sm.select(self._last_index, sm.SelectionFlag.SelectCurrent)
             except AttributeError:
                 pass  # if no last index, do not select any.
