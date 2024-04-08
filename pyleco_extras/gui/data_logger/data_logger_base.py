@@ -136,6 +136,31 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         for key, li in self._lists.items():
             self._lists[key] = li[-self.data_length_limit:]
 
+    def get_data(
+        self,
+        key: str,
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+    ) -> list[float]:
+        return self._lists[key][start:stop]
+
+    def get_xy_data(
+        self,
+        y_key: str,
+        x_key: Optional[str] = None,
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+    ) -> tuple[list[float]] | tuple[list[float], list[float]]:
+        y_data = self.get_data(key=y_key, start=start, stop=stop)
+        if x_key is None:
+            return (y_data,)
+        else:
+            x_data = self.get_data(key=x_key, start=start, stop=stop)
+            return (x_data, y_data)
+
+    def get_data_keys(self) -> Iterable[str]:
+        return self._lists.keys()
+
     def setup_timers(self) -> None:
         # Timers
         #   As trigger

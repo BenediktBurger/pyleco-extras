@@ -141,23 +141,21 @@ class SinglePlotWidget(PlotGroupWidget):
         """Update the plots."""
         x_key, y_key = self.keys
         try:
-            if x_key == "index":
-                self.reference.setData(self.main_window.lists[y_key][-self.autoCut:])
-            else:
-                self.reference.setData(
-                    self.main_window.lists[x_key][-self.autoCut:],
-                    self.main_window.lists[y_key][-self.autoCut:],
-                )
+            data_pairs = self.main_window.get_xy_data(
+                y_key=y_key, x_key=None if x_key == "index" else x_key, start=-self.autoCut
+            )
+            data = data_pairs[-1]
+            self.reference.setData(*data_pairs)
             if self.actionmm.isChecked():
                 l1, l2 = self.linesMM
-                l1.setValue(np.nanmin(self.main_window.lists[y_key]))
-                l2.setValue(np.nanmax(self.main_window.lists[y_key]))
+                l1.setValue(np.nanmin(self.main_window.get_data(y_key)))
+                l2.setValue(np.nanmax(self.main_window.get_data(y_key)))
             if self.actionlmm.isChecked():
                 l1, l2 = self.linesLMM
-                l1.setValue(np.nanmin(self.main_window.lists[y_key][-self.autoCut:]))
-                l2.setValue(np.nanmax(self.main_window.lists[y_key][-self.autoCut:]))
+                l1.setValue(np.nanmin(data))
+                l2.setValue(np.nanmax(data))
             try:
-                value = self.main_window.lists[y_key][-1]
+                value = data[-1]
             except (IndexError, KeyError):
                 value = float("nan")
             self.lbValue.setText(f"{value:.8g} {self.main_window.current_units.get(y_key, '')}")
@@ -165,7 +163,7 @@ class SinglePlotWidget(PlotGroupWidget):
             pass  # no data
         except ValueError:
             try:
-                self.lbValue.setText(f"{y_key}: {self.main_window.lists[y_key][-1]}")
+                self.lbValue.setText(f"{data[-1]}")
             except IndexError:
                 self.lbValue.setText("IndexError")
         if self.actionEvaluate.isChecked():

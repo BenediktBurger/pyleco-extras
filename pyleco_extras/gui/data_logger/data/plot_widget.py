@@ -6,7 +6,7 @@ Created on Fri Jul  9 14:32:56 2021 by Benedikt Burger.
 
 import logging
 import math
-from typing import Any, Protocol, Optional
+from typing import Any, Iterable, Protocol, Optional
 
 import numpy as np
 import pint
@@ -16,9 +16,22 @@ from qtpy.QtCore import Slot as pyqtSlot  # type: ignore
 
 
 class DataLoggerGuiProtocol(Protocol):
-    lists: dict[str, list[Any]]
     current_units: dict[str, str]
     timer: QtCore.QTimer
+
+    def get_data(
+        self, key: str, start: Optional[int] = None, stop: Optional[int] = None
+    ) -> list[float]: ...
+
+    def get_xy_data(
+        self,
+        y_key: str,
+        x_key: Optional[str] = None,
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+    ) -> tuple[list[float]] | tuple[list[float], list[float]]: ...
+
+    def get_data_keys(self) -> Iterable[str]: ...
 
 
 class PlotGroupWidget(QtWidgets.QWidget):
@@ -210,7 +223,7 @@ class PlotGroupWidget(QtWidgets.QWidget):
         comboBox.clear()
         if comboBox == self.bbX:
             comboBox.addItem("index")
-        comboBox.addItems(self.main_window.lists.keys())
+        comboBox.addItems(self.main_window.get_data_keys())
         comboBox.setCurrentText(current)
 
     def getXkeys(self) -> None:
@@ -292,17 +305,18 @@ class PlotGroupWidget(QtWidgets.QWidget):
             l2: int = self.lineV2.value()  # type: ignore
             l1, l2 = sorted((l1, l2))
             if x_key == "index":
-                raw_data = self.main_window.lists[y_key][-self.autoCut:]
+                raw_data = self.main_window.get_data(y_key, start=-self.autoCut)
                 start = math.floor(l1)
                 stop = math.ceil(l2) + 1
                 data = raw_data[start:stop]
             else:
                 # TODO only from visible data or all data (as is now)?
-                raw_data = np.array(self.main_window.lists[y_key])
-                raw_x = np.array(self.main_window.lists[x_key])
+                raw_x, raw_data = self.main_window.get_xy_data(y_key=y_key, x_key=x_key)
+                raw_data = np.array(raw_data)
+                raw_x = np.array(raw_x)
                 data = raw_data[(l1 <= raw_x) * (raw_x <= l2)]
         else:
-            data = self.main_window.lists[y_key][-self.autoCut:]
+            data = self.main_window.get_data(y_key, start=-self.autoCut)
         mean = np.nanmean(a=data)
         std = np.nanstd(a=data)
         self.lbEvaluation.setText(f"({mean:g}\u00b1{std:g})")

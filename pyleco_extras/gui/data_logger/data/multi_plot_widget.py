@@ -209,24 +209,22 @@ class MultiPlotWidget(PlotGroupWidget):
         x_key, y_key = self.keys
         try:
             if x_key == "index":
-                for key, line in self.lines.items():
-                    line.setData(self.main_window.lists[key][-self.autoCut:])
-            else:
-                for key, line in self.lines.items():
-                    line.setData(
-                        self.main_window.lists[x_key][-self.autoCut:],
-                        self.main_window.lists[key][-self.autoCut:],
-                    )
+                x_key = None
+            for key, line in self.lines.items():
+                data_pairs = self.main_window.get_xy_data(
+                    y_key=key, x_key=x_key, start=-self.autoCut
+                )
+                line.setData(*data_pairs)
         except KeyError:
             return  # no data
         try:
-            value = self.main_window.lists[y_key][-1]
+            value = self.main_window.get_data(y_key, start=-1)[0]
             units = self.main_window.current_units.get(y_key, "")
             self.lbValue.setText(f"{y_key}: {value:.8g} {units}")
         except (IndexError, KeyError, TypeError):
             pass  # no data
         except ValueError:
-            self.lbValue.setText(f"{y_key}: {self.main_window.lists[y_key][-1]}")
+            self.lbValue.setText(f"{y_key}: {self.main_window.get_data(y_key, start=-1)[0]}")
         if self.actionEvaluate.isChecked():
             self.evaluate_data()
 
@@ -245,7 +243,7 @@ class MultiPlotWidget(PlotGroupWidget):
         """Get the available keys for the y axis."""
         self.model.clear()
         self.model.setHorizontalHeaderLabels(["pen", "key"])
-        keys = self.main_window.lists.keys()
+        keys = self.main_window.get_data_keys()
         for key in keys:
             pen_color = self.pens.get(key, "")
             if pen_color and key not in self.lines:
