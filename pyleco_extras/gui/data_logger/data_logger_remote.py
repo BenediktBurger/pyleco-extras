@@ -247,9 +247,9 @@ class DataLoggerRemote(DataLoggerBase):
             if value is None:
                 value = nan
             try:
-                self.lists[key].append(value)
+                self._lists[key].append(value)
             except KeyError:
-                self.lists[key] = [value]
+                self._lists[key] = [value]
 
     def _handle_new_data_point(self, datapoint: dict[str, Any], remote_length: int):
         self._add_datapoint_to_lists(datapoint=datapoint)

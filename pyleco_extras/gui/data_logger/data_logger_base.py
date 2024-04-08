@@ -118,18 +118,23 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
 
     def setup_lists(self):
         self.plots: list[PlotGroupWidget] = []
-        self.lists: dict[str, list[Any]] = {}
+        self._lists: dict[str, list[Any]] = {}
         self.current_units: dict[str, str] = {}  # for the current measurement
         self._variables: Iterable[str]
         self._units: dict[str, str]
+
+    @property
+    def lists(self) -> dict[str, list[Any]]:
+        """Dictionary of data lists, for backward compatibility."""
+        return self._lists
 
     def cut_lists(self):
         """Cut the lists to max length."""
         if self.data_length_limit == 0:
             return  # cutting is disabled
         log.debug(f"Lists cut to length {self.data_length_limit}.")
-        for key, li in self.lists.items():
-            self.lists[key] = li[-self.data_length_limit:]
+        for key, li in self._lists.items():
+            self._lists[key] = li[-self.data_length_limit:]
 
     def setup_timers(self) -> None:
         # Timers
@@ -152,7 +157,7 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         """Restore the last configuration"""
         self.set_configuration(self.read_configuration())
         for variable in self.variables:
-            self.lists[variable] = []
+            self._lists[variable] = []
 
     @pyqtSlot()
     def closeEvent(self, event) -> None:
@@ -600,7 +605,7 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
 
     def show_list_length(self):
         try:
-            length = len(self.lists[list(self.lists.keys())[0]])
+            length = len(self._lists[list(self._lists.keys())[0]])
         except IndexError:
             length = 0
         else:
@@ -612,7 +617,7 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
     def copy_last_data_point(self) -> None:
         """Copy the last datapoint to the clipboard."""
         text_elements = []
-        for key, li in self.lists.items():
+        for key, li in self._lists.items():
             text_elements.append(f"{key}:\t {li[-1]} {self.current_units.get(key, '')}")
         clipboard = QtWidgets.QApplication.instance().clipboard()  # type: ignore
         clipboard.setText("\n".join(text_elements))

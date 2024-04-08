@@ -100,12 +100,12 @@ class DataLoggerGUI(DataLoggerBase):
         self.auto_save_timer.start(1000000000)  # just a number, will be changed in setSettings
 
     @property
-    def lists(self) -> dict[str, list[Any]]:
+    def _lists(self) -> dict[str, list[Any]]:
         # for the plots
         return self.listener.message_handler.lists
 
-    @lists.setter
-    def lists(self, value) -> None:
+    @_lists.setter
+    def _lists(self, value) -> None:
         pass  # don't do anything
 
     # Control Application

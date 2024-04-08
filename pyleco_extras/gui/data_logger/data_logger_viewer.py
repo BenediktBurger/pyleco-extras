@@ -49,7 +49,7 @@ class DataLoggerViewer(DataLoggerBase):
 
         # Add dictionaries for internal storage.
         self.plots = []
-        self.lists = {}
+        self._lists = {}
         self.units = {}
         self.last_path = ""  # last path used
 
@@ -105,11 +105,11 @@ class DataLoggerViewer(DataLoggerBase):
         self.last_path = file_name
         path = Path(file_name)
         header, data, meta = load_datalogger_file(path)
-        self.lists = data
+        self._lists = data
         self.leHeader.setPlainText(header.rsplit("\n", maxsplit=1)[0])
         self.set_configuration(meta.get("configuration", {}))
         if "time" in data.keys() and "time_h" not in data.keys():
-            self.lists["time_h"] = list(np.array(data["time"]) / 3600)
+            self._lists["time_h"] = list(np.array(data["time"]) / 3600)
             self.variables = self.variables + ["time_h"]  # type: ignore
             d = self.units
             d["time_h"] = "h"
@@ -120,7 +120,7 @@ class DataLoggerViewer(DataLoggerBase):
         self.signals.started.emit()
         # get length of data points:
         try:
-            length = len(self.lists[list(self.lists).pop()])
+            length = len(self._lists[list(self._lists).pop()])
         except IndexError:
             pass
         else:
