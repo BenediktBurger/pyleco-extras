@@ -111,18 +111,35 @@ class BaseSettings(QtWidgets.QDialog):
         self.anyset.append((getter, setter, key, defaultValue, type))
 
     def create_file_dialog(self, default: str, tooltip: str = "Save path.") -> None:
+        self.leSavePath = self.create_any_file_dialog(
+            key="savePath", defaultValue=default, tooltip=tooltip, caption="Save path."
+        )
+
+    def create_any_file_dialog(
+        self,
+        key: str,
+        tooltip: str,
+        caption: str,
+        defaultValue: str = "",
+        dialog=QtWidgets.QFileDialog.getExistingDirectory,
+    ) -> QtWidgets.QLineEdit:
         pbSavePath = QtWidgets.QPushButton("Open...")
-        self.leSavePath = QtWidgets.QLineEdit()
-        self.leSavePath.setToolTip(tooltip)
-        self.formLayout.addRow(pbSavePath, self.leSavePath)
+        leSavePath = QtWidgets.QLineEdit()
+        leSavePath.setToolTip(tooltip)
+        self.formLayout.addRow(pbSavePath, leSavePath)
+        self.anyset.append((leSavePath.text, leSavePath.setText, key, defaultValue, str))
 
         @pyqtSlot()
         def openFileDialog() -> None:
             """Open a file path dialog."""
-            path = QtWidgets.QFileDialog.getExistingDirectory(self, "Save path")
-            self.leSavePath.setText(path)
+            path = dialog(self, caption, directory=leSavePath.text())
+            if isinstance(path, tuple):
+                path = path[0]
+            if path:
+                leSavePath.setText(path)
 
         pbSavePath.clicked.connect(openFileDialog)
+        return leSavePath
 
     def readValues(self) -> None:
         """Read the stored values and show them on the user interface."""
@@ -130,10 +147,6 @@ class BaseSettings(QtWidgets.QDialog):
             widget.setValue(self.settings.value(name, defaultValue=value, type=typ))
         for getter, setter, name, value, typ in self.anyset:
             setter(self.settings.value(name, defaultValue=value, type=typ))
-        try:
-            self.leSavePath.setText(self.settings.value("savePath", type=str))
-        except AttributeError:
-            pass
 
     @pyqtSlot()
     def restoreDefaults(self) -> None:
@@ -151,8 +164,4 @@ class BaseSettings(QtWidgets.QDialog):
             self.settings.setValue(name, widget.value())
         for getter, setter, name, value, typ in self.anyset:
             self.settings.setValue(name, getter())
-        try:
-            self.settings.setValue("savePath", self.leSavePath.text())
-        except AttributeError:
-            pass
         super().accept()  # make the normal accept things
