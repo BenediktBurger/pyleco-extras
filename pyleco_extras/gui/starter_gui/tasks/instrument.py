@@ -11,7 +11,7 @@ import time
 from pymeasure.instruments import Instrument
 from pymeasure.adapters import ProtocolAdapter
 
-from devices import controller
+from pyleco.actors.actor import Actor
 
 
 log = logging.getLogger(__name__)
@@ -68,12 +68,13 @@ def readout(device, publisher):
 def task(stop_event):
     """The task which is run by the starter."""
     # Initialize
-    c = controller.InstrumentController("instrument", FantasyInstrument, periodic_reading=interval,
-                                        auto_connect={'adapter': True})
-    c._readout = readout
+    c = Actor(
+        "instrument", FantasyInstrument, periodic_reading=interval, auto_connect={"adapter": True}
+    )
+    c.read_publish = readout
     c.start_timer()
 
-    # Continuos loop
+    # Continuous loop
     c.listen(stop_event)
 
 

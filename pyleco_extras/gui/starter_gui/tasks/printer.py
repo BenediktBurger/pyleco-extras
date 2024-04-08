@@ -6,14 +6,14 @@ Example scheme for a task.
 
 import logging
 
-from devices import controller
+from pyleco.utils.message_handler import MessageHandler
 
 
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 
-class Handler(controller.MessageHandler):
+class Handler(MessageHandler):
     def handle_command(self, command, content=None):
         print(command, content)
         return ["A"]
@@ -24,7 +24,7 @@ def task(stop_event):
     # Initialize
     c = Handler("printer")
 
-    # Continuos loop
+    # Continuous loop
     c.listen(stop_event)
 
     # Finish

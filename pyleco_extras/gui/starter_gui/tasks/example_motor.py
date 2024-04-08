@@ -7,11 +7,7 @@ Example for a motor controller task simulating a TMC motor card. 'example_motor'
 
 import logging
 
-from devices.pyleco_addons import motor_controller
-
-# TODO Only needed for simulation, remove in real code
-from devices.pyTrinamicTest import ConnectionManager
-motor_controller.ConnectionManager = ConnectionManager  # replace with Testing version.
+from pyleco_extras.actors.tmc_motor_actor import TMCMotorActor
 
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
@@ -59,20 +55,20 @@ def task(stop_event):
     """The task which is run by the starter."""
     # Initialize
     try:
-        controller = motor_controller.MotorController(name, card, motorDict, log=log)
+        actor = TMCMotorActor(name, card, motorDict, log=log)
     except Exception as exc:
         log.exception(f"Creation of {name} at card {card} failed.", exc_info=exc)
         return
     for config in configs:
-        controller.configure_motor(config)
+        actor.configure_motor(config)
 
     log.debug("Motor configured.")
-    # Continuos loop
-    controller.listen(stop_event)
+    # Continuous loop
+    actor.listen(stop_event)
 
     # Finish
-    controller.disconnect()
-    controller.close()
+    actor.disconnect()
+    actor.close()
 
 
 if __name__ == "__main__":

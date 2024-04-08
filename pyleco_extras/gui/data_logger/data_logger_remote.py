@@ -45,6 +45,7 @@ class DataLoggerRemote(DataLoggerBase):
     """
 
     remote_length: int = 0
+    director: DataLoggerDirector
 
     def __init__(self, name: str = "DataLoggerRemote", host: str = "localhost", **kwargs) -> None:
         # Use initialization of parent class QMainWindow.
@@ -100,7 +101,9 @@ class DataLoggerRemote(DataLoggerBase):
             config = self.communicator.ask_rpc(receiver=self.remote, method="get_configuration")
             length = self.communicator.ask_rpc(receiver=self.remote, method="get_list_length")
         except ServerError as exc:
-            self.statusBar().showMessage(f"Communication error: {exc.rpc_error.message}", 10000)  # type: ignore
+            self.statusBar().showMessage(  # type: ignore
+                f"Communication error: {exc.rpc_error.message}", 10000
+            )
             return {}
         except Exception as exc:
             log.exception("Getting configuration failed.", exc_info=exc)
@@ -109,7 +112,7 @@ class DataLoggerRemote(DataLoggerBase):
             self.remote_length = length
             return config
 
-    def reset(self):
+    def reset(self) -> None:
         """Reset the local values to the remote one and reset the locally stored data points."""
         self.restore_configuration()
         self.current_units = self.units
@@ -121,7 +124,9 @@ class DataLoggerRemote(DataLoggerBase):
                 receiver=self.remote, method="set_configuration", configuration=properties
             )
         except ServerError as exc:
-            self.statusBar().showMessage(f"Communication error: {exc.rpc_error.message}", 3000)  # type: ignore
+            self.statusBar().showMessage(  # type: ignore
+                f"Communication error: {exc.rpc_error.message}", 3000
+            )
         except (ConnectionError, TimeoutError) as exc:
             log.exception("set property communication error", exc_info=exc)
 
@@ -129,7 +134,7 @@ class DataLoggerRemote(DataLoggerBase):
         """Set a property remotely."""
         self.set_properties(properties={name: value})
 
-    def setSettings(self):
+    def setSettings(self) -> None:
         """Apply settings."""
         super().setSettings()
         settings = QtCore.QSettings()
@@ -182,7 +187,7 @@ class DataLoggerRemote(DataLoggerBase):
 
     # Controls
     @pyqtSlot()
-    def start(self):
+    def start(self) -> None:
         """Start a measurement."""
         self.director.start_collecting(
             variables=self.variables,  # type: ignore
@@ -196,17 +201,19 @@ class DataLoggerRemote(DataLoggerBase):
         self.reset()
 
     @pyqtSlot(bool)
-    def pause(self, checked: bool):
+    def pause(self, checked: bool) -> None:
         """Pause a measurement."""
         self.set_property("pause", checked)
 
     @pyqtSlot()
-    def saveDataClicked(self):
+    def saveDataClicked(self) -> None:
         """Save the data and store the filename in the clipboard."""
         try:
             value = self.director.save_data()
         except ServerError as exc:
-            self.statusBar().showMessage(f"Communication error: {exc.rpc_error.message}", 3000)  # type: ignore
+            self.statusBar().showMessage(  # type: ignore
+                f"Communication error: {exc.rpc_error.message}", 3000
+            )
         except Exception as exc:
             log.exception("saveDataClicked", exc_info=exc)
         else:
@@ -232,7 +239,7 @@ class DataLoggerRemote(DataLoggerBase):
 
     # Text area
     @pyqtSlot()
-    def set_header(self):
+    def set_header(self) -> None:
         text = self.leHeader.toPlainText()
         self.set_property("header", text)
 
@@ -251,7 +258,7 @@ class DataLoggerRemote(DataLoggerBase):
             except KeyError:
                 self._lists[key] = [value]
 
-    def _handle_new_data_point(self, datapoint: dict[str, Any], remote_length: int):
+    def _handle_new_data_point(self, datapoint: dict[str, Any], remote_length: int) -> None:
         self._add_datapoint_to_lists(datapoint=datapoint)
         self.show_data_point(datapoint)
         self.lbRemoteCount.setText(f"Remote data points: {remote_length}")
