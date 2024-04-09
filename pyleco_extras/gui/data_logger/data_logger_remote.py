@@ -101,9 +101,7 @@ class DataLoggerRemote(DataLoggerBase):
             config = self.communicator.ask_rpc(receiver=self.remote, method="get_configuration")
             length = self.communicator.ask_rpc(receiver=self.remote, method="get_list_length")
         except ServerError as exc:
-            self.statusBar().showMessage(  # type: ignore
-                f"Communication error: {exc.rpc_error.message}", 10000
-            )
+            self.show_status_bar_message(f"Communication error: {exc.rpc_error.message}", 10000)
             return {}
         except Exception as exc:
             log.exception("Getting configuration failed.", exc_info=exc)
@@ -124,9 +122,7 @@ class DataLoggerRemote(DataLoggerBase):
                 receiver=self.remote, method="set_configuration", configuration=properties
             )
         except ServerError as exc:
-            self.statusBar().showMessage(  # type: ignore
-                f"Communication error: {exc.rpc_error.message}", 3000
-            )
+            self.show_status_bar_message(f"Communication error: {exc.rpc_error.message}", 3000)
         except (ConnectionError, TimeoutError) as exc:
             log.exception("set property communication error", exc_info=exc)
 
@@ -211,9 +207,7 @@ class DataLoggerRemote(DataLoggerBase):
         try:
             value = self.director.save_data()
         except ServerError as exc:
-            self.statusBar().showMessage(  # type: ignore
-                f"Communication error: {exc.rpc_error.message}", 3000
-            )
+            self.show_status_bar_message(f"Communication error: {exc.rpc_error.message}", 3000)
         except Exception as exc:
             log.exception("saveDataClicked", exc_info=exc)
         else:

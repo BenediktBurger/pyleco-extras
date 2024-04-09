@@ -102,19 +102,25 @@ class _LECOBaseMainWindow(QtWidgets.QMainWindow):
         """Stop to listen for incoming messages."""
         self.listener.stop_listen()
 
+    # LECO slots
     @Slot(Message)
-    def message_received(self, message: Message):
+    def message_received(self, message: Message) -> None:
         """Handle a message received (either a response or unsolicited)."""
         log.warning(f"Received an unhandled message: {message}")
 
-    # @Slot(str)
-    def show_namespace_information(self, full_name: str):
+    @Slot(str)
+    def show_namespace_information(self, full_name: str) -> None:
         """Show information regarding the namespace."""
         if "." in full_name:
             namespace = full_name.split(".")[0]
-            self.statusBar().showMessage(f"Signed in to namespace '{namespace}'.", 5000)  # type: ignore  # noqa
+            self.show_status_bar_message(f"Signed in to namespace '{namespace}'.", 5000)
         else:
-            self.statusBar().showMessage("Not signed in.", 5000)  # type: ignore
+            self.show_status_bar_message("Not signed in.", 5000)
+
+    # Generic methods
+    def show_status_bar_message(self, message: str, msecs: int = 0) -> None:
+        """Show `message` in the statusbar for `timeout` ms (0 means until next message)."""
+        self.statusBar().showMessage(message=message, msecs=msecs)
 
 
 class LECOBaseMainWindowDesigner(_LECOBaseMainWindow):

@@ -6,6 +6,11 @@
 
 - **Breaking:** rename `MotorController` to `TMCMotorActor` and `MotorDirector` to `TMCMotorDirector`
 
+### Added
+
+- `BaseMainWindow` has `show_status_bar_message` method.
+- DataLoggerGUI and its variants have now methods to access the data, which allows adding extra data.
+
 ### Fixed
 
 - Fix DataLogger multiplot window to show value.

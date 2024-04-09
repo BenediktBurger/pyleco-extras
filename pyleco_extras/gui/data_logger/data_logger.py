@@ -126,7 +126,7 @@ class DataLoggerGUI(DataLoggerBase):
         """
         # Preparation.
         self.leSavedName.setText("Saving...")
-        self.statusBar().showMessage("Saving...")  # type: ignore
+        self.show_status_bar_message("Saving...")
         settings = QtCore.QSettings()
         folder = settings.value("savePath", type=str)
         self.listener.message_handler.directory = folder
@@ -144,13 +144,13 @@ class DataLoggerGUI(DataLoggerBase):
         except Exception as exc:
             log.exception("Some type error during saving occurred.", exc_info=exc)
             self.leSavedName.setText("Error")
-            self.statusBar().showMessage(f"Writing failed due to Error. {exc}", 5000)  # type: ignore
+            self.show_status_bar_message(f"Writing failed due to Error. {exc}", 5000)
             raise
         else:
             # Indicate the name.
             log.info(f"Saved data to '{folder}/{file_name}'.")
             self.leSavedName.setText(file_name)
-            self.statusBar().showMessage(f"Saved data to '{folder}/{file_name}'.", 5000)  # type: ignore
+            self.show_status_bar_message(f"Saved data to '{folder}/{file_name}'.", 5000)
             return file_name
 
     @pyqtSlot()
@@ -175,7 +175,7 @@ class DataLoggerGUI(DataLoggerBase):
                 value_repeating=self.value_repeating,
             )
         except ServerError as exc:
-            self.statusBar().showMessage(f"Communication error: {exc.rpc_error.message}", 3000)  # type: ignore
+            self.show_status_bar_message(f"Communication error: {exc.rpc_error.message}", 3000)
         except (ConnectionError, TimeoutError) as exc:
             log.exception("set property communication error", exc_info=exc)
 
