@@ -120,7 +120,7 @@ class _LECOBaseMainWindow(QtWidgets.QMainWindow):
     # Generic methods
     def show_status_bar_message(self, message: str, msecs: int = 0) -> None:
         """Show `message` in the statusbar for `timeout` ms (0 means until next message)."""
-        self.statusBar().showMessage(message=message, msecs=msecs)
+        self.statusBar().showMessage(message, msecs)
 
 
 class LECOBaseMainWindowDesigner(_LECOBaseMainWindow):
