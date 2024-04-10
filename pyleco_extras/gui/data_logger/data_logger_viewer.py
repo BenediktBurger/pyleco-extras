@@ -79,6 +79,14 @@ class DataLoggerViewer(DataLoggerBase):
     "GUI interaction"
 
     # Controls
+    @staticmethod
+    def sanitize_data(data: dict[str, list[float]]) -> dict[str, list[float]]:
+        """Make all lists the same length."""
+        if not data:
+            return data
+        length = len(data[list(data.keys())[0]])
+        return {k: value[:length] for k, value in data.items()}
+
     @pyqtSlot()
     def start(self):
         """Start a measurement."""
@@ -105,7 +113,7 @@ class DataLoggerViewer(DataLoggerBase):
         self.last_path = file_name
         path = Path(file_name)
         header, data, meta = load_datalogger_file(path)
-        self._lists = data
+        self._lists = self.sanitize_data(data)
         self.leHeader.setPlainText(header.rsplit("\n", maxsplit=1)[0])
         self.set_configuration(meta.get("configuration", {}))
         if "time" in data.keys() and "time_h" not in data.keys():

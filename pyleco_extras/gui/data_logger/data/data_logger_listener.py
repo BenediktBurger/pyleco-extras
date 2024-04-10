@@ -106,6 +106,13 @@ class DataLoggerCore(PipeHandler, DataLogger):
         self.register_rpc_method(self.set_configuration)
 
     # additional features, might enter the DataLogger itself
+    def start_timer_trigger(self, timeout: float) -> None:
+        try:
+            return super().start_timer_trigger(timeout)
+        except TypeError:
+            # For pyleco<0.3.1
+            super().start_timer_trigger()  # type: ignore
+
     def pause(self, pause_enabled: bool) -> None:
         """Pause or resume the measurement."""
         if pause_enabled:
@@ -122,7 +129,7 @@ class DataLoggerCore(PipeHandler, DataLogger):
             if self._previous_trigger is not None:
                 self.trigger_type = self._previous_trigger
                 if self.trigger_type == TriggerTypes.TIMER:
-                    self.start_timer_trigger()
+                    self.start_timer_trigger(self.trigger_timeout)
                 self._previous_trigger = None
 
     def set_trigger_type(self, trigger_type: TriggerTypes) -> None:
@@ -132,7 +139,7 @@ class DataLoggerCore(PipeHandler, DataLogger):
             pass
         self.trigger_type = trigger_type
         if trigger_type == TriggerTypes.TIMER:
-            self.start_timer_trigger()
+            self.start_timer_trigger(self.trigger_timeout)
 
     def set_trigger_interval(self, interval: float) -> None:
         try:

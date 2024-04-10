@@ -142,7 +142,7 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         start: Optional[int] = None,
         stop: Optional[int] = None,
     ) -> list[float]:
-        return self._lists[key][start:stop]
+        return self._lists.get(key, [])[start:stop]
 
     def get_xy_data(
         self,
