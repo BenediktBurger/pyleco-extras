@@ -106,7 +106,9 @@ class DataLoggerCore(PipeHandler, DataLogger):
         self.register_rpc_method(self.set_configuration)
 
     # additional features, might enter the DataLogger itself
-    def start_timer_trigger(self, timeout: float) -> None:
+    def start_timer_trigger(self, timeout: Optional[float] = None) -> None:
+        if timeout is None:
+            timeout = self.trigger_timeout
         try:
             return super().start_timer_trigger(timeout)
         except TypeError:
