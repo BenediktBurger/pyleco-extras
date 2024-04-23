@@ -287,6 +287,8 @@ class PlotGroupWidget(QtWidgets.QWidget):
                 self.lineV1.sigDragged.connect(self.evaluate_data)
                 self.lineV2: pg.InfiniteLine = self.plotWidget.addLine(x=l2, pen="y", movable=True)
                 self.lineV2.sigDragged.connect(self.evaluate_data)
+        if not checked and not self.actionEvaluate.isChecked():
+            self.lbEvaluation.setText("-")
 
     @pyqtSlot(bool)
     def toggleV(self, checked: bool) -> None:
@@ -306,7 +308,7 @@ class PlotGroupWidget(QtWidgets.QWidget):
             l1, l2 = sorted((l1, l2))
             if x_key == "index":
                 raw_data = self.main_window.get_data(y_key, start=-self.autoCut)
-                start = math.floor(l1)
+                start = max(math.floor(l1), 0)
                 stop = math.ceil(l2) + 1
                 data = raw_data[start:stop]
             else:
