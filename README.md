@@ -66,8 +66,8 @@ That removes the need to create a director for a specific instrument, but offers
 
 ### Trinamic Motor Cards
 
-The `actors.motor_controller` offers an Actor for Trinamic motor cards.
-The `directors.motor_director` offers the corresponding Director, which can be used as an in-place replacement for trinamic motor cards objects of the [pytrinamic](https://github.com/trinamic/PyTrinamic) project.
+The `actors.tmc_motor_actor` offers an Actor for Trinamic motor cards.
+The `directors.tmc_motor_director` offers the corresponding Director, which can be used as an in-place replacement for trinamic motor cards objects of the [pytrinamic](https://github.com/trinamic/PyTrinamic) project.
 
 
 ## Tools
