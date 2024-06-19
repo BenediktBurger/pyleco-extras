@@ -6,7 +6,7 @@ Created on Fri Jul  9 14:32:56 2021 by Benedikt Burger.
 
 import logging
 import math
-from typing import Any, Iterable, Protocol, Optional
+from typing import Any, Iterable, Protocol, Optional, Union
 
 import numpy as np
 import pint
@@ -29,7 +29,7 @@ class DataLoggerGuiProtocol(Protocol):
         x_key: Optional[str] = None,
         start: Optional[int] = None,
         stop: Optional[int] = None,
-    ) -> tuple[list[float]] | tuple[list[float], list[float]]: ...
+    ) -> Union[tuple[list[float]], tuple[list[float], list[float]]]: ...
 
     def get_data_keys(self) -> Iterable[str]: ...
 
