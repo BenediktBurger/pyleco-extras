@@ -166,6 +166,8 @@ class SinglePlotWidget(PlotGroupWidget):
                 self.lbValue.setText(f"{data[-1]}")
             except IndexError:
                 self.lbValue.setText("IndexError")
+        except Exception as exc:
+            self.log.exception(f"Updating data failed with '{exc}'", exc_info=exc)
         if self.actionEvaluate.isChecked():
             self.evaluate_data()
 

@@ -225,6 +225,8 @@ class MultiPlotWidget(PlotGroupWidget):
             pass  # no data
         except ValueError:
             self.lbValue.setText(f"{y_key}: {self.main_window.get_data(y_key, start=-1)[0]}")
+        except Exception as exc:
+            self.log.exception(f"Updating data failed with '{exc}'", exc_info=exc)
         if self.actionEvaluate.isChecked():
             self.evaluate_data()
 
