@@ -37,3 +37,19 @@ class Test_get_xy_data:
 
 def test_get_data_keys(data_logger: DataLoggerBase):
     assert list(data_logger.get_data_keys()) == ["x", "y"]
+
+
+@pytest.mark.parametrize(
+    "text, vars, units",
+    (
+        ("time:s, random", ["time", "random"], {"time": "s"}),
+        (
+            "time:s,\nSERVER.pub.var, .var2: W",
+            ["time", "SERVER.pub.var", "SERVER.pub.var2"],
+            {"time": "s", "SERVER.pub.var2": "W"},
+        ),
+        ("abc, .def", ["abc", ".def"], {}),
+    ),
+)
+def test_interpret_variables_text(text, vars, units):
+    assert DataLoggerBase._interpret_variables_and_units_text(text) == (vars, units)

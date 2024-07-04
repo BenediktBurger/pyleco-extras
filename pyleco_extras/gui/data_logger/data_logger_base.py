@@ -277,9 +277,10 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         config.update(self.get_gui_configuration())
         return config
 
-    def _read_variables_and_units(self) -> None:
-        var_text = self.teVariables.toPlainText().replace(": ", ":").replace(",", " ")
-        raw_vars = var_text.split()
+    @staticmethod
+    def _interpret_variables_and_units_text(var_text: str) -> tuple[list[str], dict[str, str]]:
+        sanitized_text = var_text.replace(": ", ":").replace(",", " ")
+        raw_vars = sanitized_text.split()
         last_name = ""
         variables = []
         units = {}
@@ -297,8 +298,11 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
             if u is not None:
                 units[v] = u
             variables.append(v)
-        self._variables = variables
-        self._units = units
+        return variables, units
+
+    def _read_variables_and_units(self) -> None:
+        var_text = self.teVariables.toPlainText()
+        self._variables, self._units = self._interpret_variables_and_units_text(var_text=var_text)
 
     def _update_variables_and_units(self) -> None:
         """Update the line with variables and units."""
@@ -342,13 +346,12 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
 
     @trigger_type.setter
     def trigger_type(self, value: TriggerTypes | str) -> None:
-        match value:
-            case TriggerTypes.NONE:
-                self.actionPause.setChecked(True)
-            case TriggerTypes.TIMER:
-                self.cbTimer.setChecked(True)
-            case TriggerTypes.VARIABLE:
-                self.cbTrigger.setChecked(True)
+        if value == TriggerTypes.NONE:
+            self.actionPause.setChecked(True)
+        elif value == TriggerTypes.TIMER:
+            self.cbTimer.setChecked(True)
+        elif value == TriggerTypes.VARIABLE:
+            self.cbTrigger.setChecked(True)
 
     @property
     def trigger_timeout(self) -> float:
@@ -397,7 +400,8 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         """Set measurement configuration according to the dict `configuration`."""
         self._set_config(**configuration)
 
-    def read_legacy_units(self, text: str) -> dict[str, str]:
+    @staticmethod
+    def read_legacy_units(text: str) -> dict[str, str]:
         """Interpreting the old units text and returning a corresponding dict."""
         units = {}
         for element in text.split(","):
