@@ -335,10 +335,3 @@ class MultiPlotWidget(PlotGroupWidget):
             except Exception as exc:
                 self.log.exception("Adjusting the view for showing the data failed.", exc_info=exc)
                 return
-            try:
-                sm: QtCore.QItemSelectionModel = self.tvLines.selectionModel()  # type: ignore
-                sm.select(self._last_index, sm.SelectionFlag.SelectCurrent)
-            except AttributeError:
-                pass  # if no last index, do not select any.
-            except Exception as exc:
-                self.log.exception("Selecting previous data failed.", exc_info=exc)
