@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 from qtpy import QtCore, QtGui, QtWidgets, uic
 from qtpy.QtCore import Slot  # type: ignore
@@ -120,7 +120,7 @@ class _LECOBaseMainWindow(QtWidgets.QMainWindow):
     # Generic methods
     def show_status_bar_message(self, message: str, msecs: int = 0) -> None:
         """Show `message` in the statusbar for `timeout` ms (0 means until next message)."""
-        self.statusBar().showMessage(message, msecs)
+        self.statusBar().showMessage(message, msecs)  # type: ignore
 
 
 class LECOBaseMainWindowDesigner(_LECOBaseMainWindow):
@@ -137,7 +137,7 @@ class LECOBaseMainWindowDesigner(_LECOBaseMainWindow):
         name: str,
         ui_file_name: str,
         ui_file_path: Union[Path, str] = "data",
-        settings_dialog_class: type[QtWidgets.QDialog] | None = None,
+        settings_dialog_class: Optional[type[QtWidgets.QDialog]] = None,
         host: str = "localhost",
         port: int = COORDINATOR_PORT,
         logger: logging.Logger = log,
@@ -164,7 +164,7 @@ class LECOBaseMainWindowDesigner(_LECOBaseMainWindow):
 class LECOBaseMainWindowNoDesigner(_LECOBaseMainWindow):
     """Base window, which is defined by manual design."""
 
-    def _setup_ui(self):
+    def _setup_ui(self) -> None:
         self.actionClose = QtGui.QAction("Close")  # type: ignore
         self.actionSettings = QtGui.QAction("Settings...")  # type: ignore
         mb = self.menuBar()
@@ -175,7 +175,7 @@ class LECOBaseMainWindowNoDesigner(_LECOBaseMainWindow):
 
 def start_app(
     main_window_class,
-    window_kwargs: dict | None = None,
+    window_kwargs: Optional[dict[str, Any]] = None,
     logger: Optional[logging.Logger] = None,
     **kwargs,
 ) -> None:
