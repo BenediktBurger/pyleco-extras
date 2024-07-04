@@ -94,7 +94,7 @@ class DataLoggerRemote(DataLoggerBase):
         self.cbRepeat.stateChanged.connect(self.toggleRepeat)
         # Text
         self.leHeader.textChanged.connect(self.set_header)
-        self.leVariables.textEdited.connect(self.set_variables)
+        self.teVariables.textChanged.connect(self.set_variables)
 
     def read_configuration(self) -> dict[str, Any]:
         try:
@@ -237,8 +237,9 @@ class DataLoggerRemote(DataLoggerBase):
         text = self.leHeader.toPlainText()
         self.set_property("header", text)
 
-    @pyqtSlot(str)
-    def set_variables(self, text: str) -> None:
+    @pyqtSlot()
+    def set_variables(self) -> None:
+        text = self.teVariables.toPlainText()
         self.set_property("variablesText", text)
 
     "Regular readout"

@@ -67,7 +67,8 @@ class DataLoggerViewer(DataLoggerBase):
             self.cbValueMean,
             self.cbRepeat,
             self.leHeader,
-            self.leVariables,
+            self.teVariables,
+            self.teValues,
         ):
             widget.setEnabled(False)
         self.actionStart.setToolTip("Load a measurement file.")

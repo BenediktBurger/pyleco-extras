@@ -137,7 +137,7 @@ class DataLoggerGUI(DataLoggerBase):
             file_name = self.communicator.ask_handler(
                 method="save_data",
                 timeout=30,
-                header=f"{self.leHeader.toPlainText()}\n{self.leVariables.text()}",
+                header=f"{self.leHeader.toPlainText()}\n{self.teVariables.toPlainText()}",
                 meta=meta,
                 suffix=suffix,
             )

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>248</width>
-    <height>321</height>
+    <height>353</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,7 +49,7 @@
         <property name="bottomMargin">
          <number>3</number>
         </property>
-        <item row="2" column="3">
+        <item row="2" column="2">
          <widget class="QGroupBox" name="gbValue">
           <property name="toolTip">
            <string>Takes effect at next measurement start.</string>
@@ -109,51 +109,7 @@
           </layout>
          </widget>
         </item>
-        <item row="4" column="0" colspan="4">
-         <widget class="QLineEdit" name="leVariables">
-          <property name="toolTip">
-           <string>Variables to save. This line is appended to the header. Use time for the time in seconds today.</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="2" colspan="2">
-         <widget class="QLabel" name="lbValues">
-          <property name="text">
-           <string>Values</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0" colspan="4">
-         <widget class="QPlainTextEdit" name="leHeader">
-          <property name="toolTip">
-           <string>Header of the save file.</string>
-          </property>
-          <property name="sizeAdjustPolicy">
-           <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" colspan="4">
-         <widget class="QLineEdit" name="leSavedName">
-          <property name="toolTip">
-           <string>Name of the saved file.</string>
-          </property>
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0" colspan="2">
-         <widget class="QLabel" name="lbVariables">
-          <property name="toolTip">
-           <string>Variable values of the last data point.</string>
-          </property>
-          <property name="text">
-           <string>Variables</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0" colspan="3">
+        <item row="2" column="0" colspan="2">
          <widget class="QGroupBox" name="gbTrigger">
           <property name="toolTip">
            <string>Takes effect immediately!</string>
@@ -217,6 +173,64 @@
              </property>
              <property name="toolTip">
               <string>Variable name to trigger at.</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="3" column="0" colspan="3">
+         <widget class="QPlainTextEdit" name="leHeader">
+          <property name="toolTip">
+           <string>Header of the save file.</string>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="3">
+         <widget class="QLineEdit" name="leSavedName">
+          <property name="toolTip">
+           <string>Name of the saved file.</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0" colspan="3">
+         <widget class="QWidget" name="widget" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QPlainTextEdit" name="teVariables">
+             <property name="toolTip">
+              <string>Variables to save. This line is appended to the header. Use time for the time in seconds today. Use leading period to repeat the publisher name.</string>
+             </property>
+             <property name="lineWrapMode">
+              <enum>QPlainTextEdit::NoWrap</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPlainTextEdit" name="teValues">
+             <property name="lineWrapMode">
+              <enum>QPlainTextEdit::NoWrap</enum>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -442,7 +456,6 @@
   <tabstop>cbValueMean</tabstop>
   <tabstop>cbRepeat</tabstop>
   <tabstop>leHeader</tabstop>
-  <tabstop>leVariables</tabstop>
   <tabstop>leSavedName</tabstop>
   <tabstop>tabWidget</tabstop>
  </tabstops>

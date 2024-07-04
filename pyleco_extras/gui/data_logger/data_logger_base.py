@@ -48,9 +48,8 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
     cbValueMean: QtWidgets.QRadioButton
     cbRepeat: QtWidgets.QCheckBox
     leHeader: QtWidgets.QPlainTextEdit
-    leVariables: QtWidgets.QLineEdit
-    lbVariables: QtWidgets.QLabel
-    lbValues: QtWidgets.QLabel
+    teVariables: QtWidgets.QPlainTextEdit
+    teValues: QtWidgets.QPlainTextEdit
 
     tabWidget: QtWidgets.QTabWidget
     toolBar: QtWidgets.QToolBar
@@ -279,16 +278,24 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         return config
 
     def _read_variables_and_units(self) -> None:
-        var_text = self.leVariables.text().replace(": ", ":").replace(",", " ")
+        var_text = self.teVariables.toPlainText().replace(": ", ":").replace(",", " ")
         raw_vars = var_text.split()
+        last_name = ""
         variables = []
         units = {}
         for raw_var in raw_vars:
             if ":" in raw_var:
                 v, u = raw_var.split(":", maxsplit=1)
-                units[v] = u
             else:
                 v = raw_var
+                u = None
+            if len(split := v.rsplit(".", maxsplit=1)) > 1:
+                if split[0]:
+                    last_name = split[0]
+                elif last_name:
+                    v = ".".join((last_name, split[1]))
+            if u is not None:
+                units[v] = u
             variables.append(v)
         self._variables = variables
         self._units = units
@@ -298,10 +305,10 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         vars = []
         for var in self._variables:
             if unit := self._units.get(var):
-                vars.append(":".join((var, unit)))
+                vars.append(": ".join((var, unit)))
             else:
                 vars.append(var)
-        self.leVariables.setText(", ".join(vars))
+        self.teVariables.setPlainText(",\n".join(vars))
 
     @property
     def variables(self) -> Iterable[str]:
@@ -443,7 +450,7 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         if variables is not None:
             self.variables = variables
         if variablesText is not None:
-            self.leVariables.setText(variablesText)
+            self.teVariables.setPlainText(variablesText)
         if units is not None:
             self.units = units
         if header is not None:
@@ -617,8 +624,7 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
     @pyqtSlot(dict)
     def show_data_point(self, datapoint: dict[str, Any]) -> None:
         self.show_list_length()
-        self.lbVariables.setText("\n".join(datapoint.keys()))
-        self.lbValues.setText(
+        self.teValues.setPlainText(
             "\n".join(
                 f"{value} {self.current_units.get(variable, '')}"
                 for variable, value in datapoint.items()
