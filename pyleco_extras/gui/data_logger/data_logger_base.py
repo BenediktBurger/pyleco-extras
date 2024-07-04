@@ -6,7 +6,7 @@ Base File for the DataLogger family.
 import logging
 from pathlib import Path
 import time
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable, Optional, Union
 
 # 3rd party
 from PyQt6 import QtCore, QtGui, QtWidgets
@@ -149,7 +149,7 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
         x_key: Optional[str] = None,
         start: Optional[int] = None,
         stop: Optional[int] = None,
-    ) -> tuple[list[float]] | tuple[list[float], list[float]]:
+    ) -> Union[tuple[list[float]], tuple[list[float], list[float]]]:
         y_data = self.get_data(key=y_key, start=start, stop=stop)
         if x_key is None:
             return (y_data,)
@@ -345,7 +345,7 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
             return TriggerTypes.NONE
 
     @trigger_type.setter
-    def trigger_type(self, value: TriggerTypes | str) -> None:
+    def trigger_type(self, value: Union[TriggerTypes, str]) -> None:
         if value == TriggerTypes.NONE:
             self.actionPause.setChecked(True)
         elif value == TriggerTypes.TIMER:
@@ -389,7 +389,7 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
             return ValuingModes.LAST
 
     @valuing_mode.setter
-    def valuing_mode(self, value: ValuingModes | str) -> None:
+    def valuing_mode(self, value: Union[ValuingModes, str]) -> None:
         if value == ValuingModes.LAST:
             self.cbValueLast.setChecked(True)
         elif value == ValuingModes.AVERAGE:
@@ -418,21 +418,21 @@ class DataLoggerBase(LECOBaseMainWindowDesigner):
 
     def _set_config(
         self,
-        trigger_type: str | None = None,
-        trigger_timeout: float | None = None,
-        trigger_variable: str | None = None,
-        valuing_mode: str | None = None,
-        value_repeating: bool | None = None,
-        header: str | None = None,
-        variables: Iterable[str] | None = None,
-        variablesText: str | None = None,
-        units: dict[str, str] | None = None,
-        unitsText: str | None = None,
-        meta: Any | None = None,
-        autoSaveInterval: float | None = None,
-        autoSave: bool | None = None,
-        autoCut: int | None = None,
-        pause: bool | None = None,
+        trigger_type: Optional[str] = None,
+        trigger_timeout: Optional[float] = None,
+        trigger_variable: Optional[str] = None,
+        valuing_mode: Optional[str] = None,
+        value_repeating: Optional[bool] = None,
+        header: Optional[str] = None,
+        variables: Optional[Iterable[str]] = None,
+        variablesText: Optional[str] = None,
+        units: Optional[dict[str, str]] = None,
+        unitsText: Optional[str] = None,
+        meta: Optional[Any] = None,
+        autoSaveInterval: Optional[float] = None,
+        autoSave: Optional[bool] = None,
+        autoCut: Optional[int] = None,
+        pause: Optional[bool] = None,
         start: bool = False,
         **kwargs,
     ) -> None:
