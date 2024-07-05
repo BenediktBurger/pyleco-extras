@@ -24,7 +24,6 @@ class BaseSettings(QtWidgets.QDialog):
     """
 
     def __init__(self, **kwargs) -> None:
-        """Initialize the dialog."""
         # Use initialization of parent class QDialog.
         super().__init__(**kwargs)
 
