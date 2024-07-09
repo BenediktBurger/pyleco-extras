@@ -58,6 +58,7 @@ class MultiPlotWidget(PlotGroupWidget):
         self.action_show_lines.setIconText("ls")
         self.action_show_lines.setToolTip("Show the lines setup.")
         self.action_show_lines.setCheckable(True)
+        self.action_show_lines.setChecked(True)
         self.action_show_lines.toggled.connect(self.show_line_settings)
 
     def _setup_ui(self):
@@ -93,6 +94,7 @@ class MultiPlotWidget(PlotGroupWidget):
         self.pbLines.setText("ls")
         self.pbLines.setToolTip("Show the lines setup.")
         self.pbLines.setCheckable(True)
+        self.pbLines.setChecked(True)
         self.pbLines.clicked.connect(self.action_show_lines.setChecked)
 
         # Connect actions to slots
