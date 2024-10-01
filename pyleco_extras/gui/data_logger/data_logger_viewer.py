@@ -113,7 +113,14 @@ class DataLoggerViewer(DataLoggerBase):
             return  # user pressed cancel
         self.last_path = file_name
         path = Path(file_name)
-        header, data, meta = load_datalogger_file(path)
+        try:
+            header, data, meta = load_datalogger_file(path)
+        except Exception as exc:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowTitle("Loading file failed.")
+            msg.setText(f"Loading the file failed with {type(exc).__name__}:\n{exc}")
+            msg.exec()
+            return
         self._lists = self.sanitize_data(data)
         self.leHeader.setPlainText(header.rsplit("\n", maxsplit=1)[0])
         self.set_configuration(meta.get("configuration", {}))
