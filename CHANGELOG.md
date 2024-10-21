@@ -14,6 +14,7 @@
 ### Fixed
 
 - Fix DataLogger multiplot window to show value.
+- Fix DataLogger start to unpause correctly [#13](https://github.com/BenediktBurger/pyleco-extras/issues/13)
 
 
 ## [0.1.0] 2024-02-02

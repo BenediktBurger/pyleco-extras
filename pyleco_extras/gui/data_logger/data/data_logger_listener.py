@@ -68,6 +68,7 @@ class DataLoggerCore(PipeHandler, DataLogger):
         valuing_mode: Optional[ValuingModes] = None,
         value_repeating: Optional[bool] = None,
     ) -> None:
+        self.pause(False)
         retv = super().start_collecting(
             variables=variables,
             units=units,
@@ -125,6 +126,7 @@ class DataLoggerCore(PipeHandler, DataLogger):
                 self.trigger_type = TriggerTypes.NONE
                 try:
                     self.timer.cancel()
+                    del self.timer
                 except AttributeError:
                     pass
         else:
