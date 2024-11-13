@@ -8,6 +8,8 @@ Additional content for [PyLECO](https://github.com/pymeasure/pyleco) the python 
 This module offers additional actors, directors, etc.
 It also offers some GUI utils for easier control of the PyLECO Components.
 
+This repository is archived, further development happens on https://git.rwth-aachen.de/nloqo/general/pyleco-extras .
+
 
 ## Installation
 
